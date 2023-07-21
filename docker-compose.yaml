@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  gpt-db:
+    image: postgres:9.6.12
+    container_name: gpt-db
+    environment:
+      - POSTGRES_DB=gpt-db
+      - POSTGRES_USER=gpt-admin
+      - POSTGRES_PASSWORD=gpt-password
+      - DATABASE_PORT=5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+  
+volumes:
+  db-data:
