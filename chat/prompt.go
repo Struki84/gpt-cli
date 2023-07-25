@@ -13,7 +13,7 @@ import (
 )
 
 func Prompt(input string) string {
-	llm, err := openai.New(openai.WithModel("gpt-4"))
+	llm, err := openai.New(openai.WithModel("gpt-3.5-turbo-16k"))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -31,14 +31,11 @@ func init() {
 		SerpAPIKey string `yaml:"serpapi_api_key"`
 	}
 
-	// Read the yaml file
 	yamlFile, err := ioutil.ReadFile("./keys.yaml")
 	if err != nil {
 		panic(err)
 	}
 
-	// Unmarshal the yaml file into a Config struct
-	
 	err = yaml.Unmarshal(yamlFile, &config)
 	if err != nil {
 		panic(err)
@@ -65,19 +62,23 @@ func init() {
 				fmt.Println(err)
 			}
 
-			completion, err := llm.Call(context.Background(), []schema.ChatMessage{
+			msg := []schema.ChatMessage{
 				schema.SystemChatMessage{Text: "Hello, I am a friendly chatbot. I love to talk about movies, books and music."},
 				schema.HumanChatMessage{Text: input},
-			}, llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
-				fmt.Print(string(chunk))
-				return nil
-			}))
+			}
+
+			_, err = llm.Call(
+				context.Background(), 
+				msg, 
+				llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
+					fmt.Print(string(chunk))
+					return nil
+				}),
+			)
 
 			if err != nil {
 				fmt.Println(err)
 			}
-	
-			fmt.Println(completion)
 		},
 	}
 
