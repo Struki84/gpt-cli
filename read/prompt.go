@@ -9,8 +9,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/documentloaders"
-	"github.com/tmc/langchaingo/embeddings"
-	"github.com/tmc/langchaingo/llms/openai"
+	"github.com/tmc/langchaingo/embeddings/openai"
+	llm "github.com/tmc/langchaingo/llms/openai"
 	"github.com/tmc/langchaingo/textsplitter"
 	"github.com/tmc/langchaingo/vectorstores"
 	"github.com/tmc/langchaingo/vectorstores/pinecone"
@@ -40,7 +40,7 @@ func Prompt(query string, path string) {
 	}
 
 	// >>>>> Embeddings
-	e, err := embeddings.NewOpenAI()
+	e, err := openai.NewOpenAI()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -78,7 +78,7 @@ func Prompt(query string, path string) {
 	fmt.Println("Similarity search Docs: ", docs)
 
 	// >>>>> Calls 
-	llm, err := openai.New()
+	llm, err := llm.New()
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -88,7 +88,7 @@ func (adapter *PostgreAdapter) SaveDBContext(id string, msgs []schema.ChatMessag
 	for _, msg := range msgs {
 		newMsgs = append(newMsgs, Message{
 			Type: string(msg.GetType()),
-			Text: msg.GetText(),
+			Text: msg.GetContent(),
 		})
 	}
 

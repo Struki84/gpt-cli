@@ -72,13 +72,18 @@ func (buffer *PostgreBuffer) LoadMemoryVariables(inputs map[string]any) (map[str
 		mem.WithPreviousMessages(msgs),
 	)
 
+	msgs, err = buffer.ChatHistory.Messages()
+	if err != nil {
+		return nil, err
+	}
+
 	if buffer.ReturnMessages {
 		return map[string]any{
-			buffer.MemoryKey: buffer.ChatHistory.Messages(),
+			buffer.MemoryKey: msgs,
 		}, nil
 	}
 
-	bufferString, err := schema.GetBufferString(buffer.ChatHistory.Messages(), buffer.HumanPrefix, buffer.AIPrefix)
+	bufferString, err := schema.GetBufferString(msgs, buffer.HumanPrefix, buffer.AIPrefix)
 	if err != nil {
 		return nil, err
 	}
@@ -102,6 +107,12 @@ func (buffer *PostgreBuffer) LoadMemoryVariables(inputs map[string]any) (map[str
 //
 // Return type: error
 func (buffer *PostgreBuffer) SaveContext(inputs map[string]any, outputs map[string]any) error {
+	msgs, err := buffer.ChatHistory.Messages()
+	if err != nil {
+		return err
+	}
+
+	
 	userInputValue, err := getInputValue(inputs, buffer.InputKey)
 	if err != nil {
 		return err
@@ -116,12 +127,12 @@ func (buffer *PostgreBuffer) SaveContext(inputs map[string]any, outputs map[stri
 
 	buffer.ChatHistory.AddAIMessage(aiOutPutValue)
 
-	bufferString, err := schema.GetBufferString(buffer.ChatHistory.Messages(), buffer.HumanPrefix, buffer.AIPrefix)
+	bufferString, err := schema.GetBufferString(msgs, buffer.HumanPrefix, buffer.AIPrefix)
 	if err != nil {
 		return err
 	}
 
-	err = buffer.DB.SaveHistory(buffer.ChatHistory.Messages(), bufferString)
+	err = buffer.DB.SaveHistory(msgs, bufferString)
 	if err != nil {
 		return err
 	}
@@ -136,6 +147,10 @@ func (buffer *PostgreBuffer) Clear() error {
 		return err
 	}
 	return nil
+}
+
+func (m *PostgreBuffer) GetMemoryKey() string {
+	return m.MemoryKey
 }
 
 func getInputValue(inputValues map[string]any, inputKey string) (string, error) {

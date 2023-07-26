@@ -63,8 +63,8 @@ func init() {
 			}
 
 			msg := []schema.ChatMessage{
-				schema.SystemChatMessage{Text: "Hello, I am a friendly chatbot. I love to talk about movies, books and music."},
-				schema.HumanChatMessage{Text: input},
+				schema.SystemChatMessage{Content: "Hello, I am a friendly chatbot. I love to talk about movies, books and music."},
+				schema.HumanChatMessage{Content: input},
 			}
 
 			_, err = llm.Call(

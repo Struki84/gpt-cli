@@ -55,7 +55,7 @@ func (db *Database) SaveHistory(msgs []schema.ChatMessage, bs string) error {
 	for _, msg := range msgs {
 		newMsgs = append(newMsgs, Message{
 			Type: string(msg.GetType()),
-			Text: msg.GetText(),
+			Text: msg.GetContent(),
 		})
 	}
 
@@ -87,11 +87,11 @@ func (db *Database) GetHistroy() ([]schema.ChatMessage, error) {
 			msg := (*db.history.ChatHistory)[i]
 
 			if msg.Type == "human" {
-				msgs = append(msgs, schema.HumanChatMessage{Text: msg.Text})
+				msgs = append(msgs, schema.HumanChatMessage{Content: msg.Text})
 			}
 
 			if msg.Type == "ai" {
-				msgs = append(msgs, schema.AIChatMessage{Text: msg.Text})
+				msgs = append(msgs, schema.AIChatMessage{Content: msg.Text})
 			}
 		}
 	}

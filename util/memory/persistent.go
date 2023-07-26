@@ -58,13 +58,15 @@ func (buffer PersistentBuffer) LoadMemoryVariables(inputs map[string]any) (map[s
 		memory.WithPreviousMessages(msgs),
 	)
 
+	msgs, err = buffer.ChatHistory.Messages()
+
 	if buffer.ReturnMessages {
 		return map[string]any{
-			buffer.MemoryKey: buffer.ChatHistory.Messages(),
+			buffer.MemoryKey: msgs,
 		}, nil
 	}
 
-	bufferString, err := schema.GetBufferString(buffer.ChatHistory.Messages(), buffer.HumanPrefix, buffer.AIPrefix)
+	bufferString, err := schema.GetBufferString(msgs, buffer.HumanPrefix, buffer.AIPrefix)
 	if err != nil {
 		return nil, err
 	}
@@ -90,12 +92,15 @@ func (buffer PersistentBuffer) SaveContext(inputs map[string]any, outputs map[st
 
 	buffer.ChatHistory.AddAIMessage(aiOutPutValue)
 
-	bufferString, err := schema.GetBufferString(buffer.ChatHistory.Messages(), buffer.HumanPrefix, buffer.AIPrefix)
+	msgs, err := buffer.ChatHistory.Messages()
 	if err != nil {
 		return err
 	}
 
-	msgs := buffer.ChatHistory.Messages()
+	bufferString, err := schema.GetBufferString(msgs, buffer.HumanPrefix, buffer.AIPrefix)
+	if err != nil {
+		return err
+	}
 
 	err = buffer.DB.SaveDBContext(sessionID, msgs, bufferString)
 	if err != nil {
@@ -103,6 +108,10 @@ func (buffer PersistentBuffer) SaveContext(inputs map[string]any, outputs map[st
 	}
 
 	return nil
+}
+
+func (buffer PersistentBuffer) GetMemoryKey() string {
+	return buffer.MemoryKey
 }
 
 func (buffer PersistentBuffer) Clear() error {
