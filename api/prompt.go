@@ -12,25 +12,25 @@ import (
 )
 
 func Prompt(query string) {
-	
-	llm, err := openai.New()
+
+	llm, err := openai.New(openai.WithModel("gpt-4"))
 	if err != nil {
 		log.Print(err)
 	}
 
 	apiDocs := loadApiDocs()
 	chain := NewAPIChain(llm, http.DefaultClient)
-	
-	input := map[string]any {
+
+	input := map[string]any{
 		"api_docs": apiDocs,
-		"input":  query,
+		"input":    query,
 	}
-	
-	result, err := chains.Call(context.Background(), chain, input, chains.WithTemperature(0.1))
+
+	result, err := chains.Call(context.Background(), chain, input)
 	if err != nil {
 		log.Print(err)
 	}
-	
+
 	fmt.Println(result["answer"])
 }
 

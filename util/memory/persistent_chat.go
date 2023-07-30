@@ -17,11 +17,20 @@ func NewPersistentChatMessageHistory(options ...PersistentChatMessageHistoryOpti
 	return applyChatOptions(options...)
 }
 
+func (h *PersistentChatMessageHistory) GetSessionID() string {
+	return h.store.GetSessionID()
+}
+
+func (h *PersistentChatMessageHistory) SetSessionID(id string) {
+	h.store.SetSessionID(id)
+}
+
 func (h *PersistentChatMessageHistory)Messages() ([]sch.ChatMessage, error) {
 	msgs, err := h.store.GetMessages()
 	if err != nil {
 		return nil, err
 	}
+	
 	h.messages = msgs
 	return h.messages, nil
 }

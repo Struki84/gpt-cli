@@ -4,6 +4,12 @@ import "github.com/tmc/langchaingo/schema"
 
 type ChatMessageHistoryStore interface {
 	
+	// SetSessionId method for setting user session id
+	SetSessionID(id string)
+
+	// GetSessionId method for getting user session id
+	GetSessionID() string
+
 	// AddMessage method for storing a message in the DB store
 	AddMessage(msg schema.ChatMessage) error
 
@@ -15,10 +21,4 @@ type ChatMessageHistoryStore interface {
 	
 	// ClearMessages method for clearing messages in the DB store
 	ClearMessages() error
-	
-	// SetSessionId method for setting user session id
-	SetSessionId(id string)
-
-	// GetSessionId method for getting user session id
-	GetSessionId() string
 }
