@@ -18,7 +18,7 @@ func Prompt(query string) {
 		log.Print(err)
 	}
 
-	apiDocs := loadApiDocs()
+	apiDocs := loadApiDocs("mockup_api_docs.txt")
 	chain := NewAPIChain(llm, http.DefaultClient)
 
 	input := map[string]any{
@@ -34,8 +34,9 @@ func Prompt(query string) {
 	fmt.Println(result["answer"])
 }
 
-func loadApiDocs() string {
-	prompt, err := os.ReadFile("./api/docs/mockup_api_docs.txt")
+func loadApiDocs(file string) string {
+	path := "./api/docs/" + file
+	prompt, err := os.ReadFile(path)
 	if err != nil {
 		log.Print("Error reading api docs:", err)
 		return ""

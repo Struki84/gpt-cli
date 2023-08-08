@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -16,7 +15,7 @@ import (
 	"gpt/browser"
 	"gpt/chat"
 	"gpt/read"
-	"gpt/util/scraper"
+	"gpt/util/tools"
 )
 
 var rootCmd = &cobra.Command{
@@ -27,11 +26,11 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	var config struct {
-		OpenAPIKey    string `yaml:"open_api_key"`
+		OpenAPIKey string `yaml:"open_api_key"`
 		SerpAPIKey string `yaml:"serpapi_api_key"`
 	}
 
-	yamlFile, err := ioutil.ReadFile("./keys.yaml")
+	yamlFile, err := os.ReadFile("./keys.yaml")
 	if err != nil {
 		panic(err)
 	}
@@ -68,8 +67,8 @@ func init() {
 			}
 
 			_, err = llm.Call(
-				context.Background(), 
-				msg, 
+				context.Background(),
+				msg,
 				llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
 					fmt.Print(string(chunk))
 					return nil
@@ -115,15 +114,27 @@ func init() {
 	runCommand := &cobra.Command{
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
-			scraper, err := scraper.NewScraper()
+
+			key := os.Getenv("SERPAPI_API_KEY")
+			search := tools.NewSearch(
+				tools.WithApiKey(key),
+				tools.WithMaxResults(5),
+			)
+
+			result, err := search.Search(context.Background(), args[0])
 			if err != nil {
-				fmt.Println(err)
+				fmt.Print(err)
 			}
 
-			result, err := scraper.Call(context.Background(), args[0])
-			if err != nil {
-				fmt.Println(err)
-			}
+			// scraper, err := scraper.NewScraper()
+			// if err != nil {
+			// 	fmt.Println(err)
+			// }
+
+			// result, err := scraper.Call(context.Background(), args[0])
+			// if err != nil {
+			// 	fmt.Println(err)
+			// }
 
 			fmt.Println(result)
 		},

@@ -20,7 +20,7 @@ Final Answer:
   Most Relevant Links:
   - Link 1: Description of Link 1
   - Link N: Description of Link N
-  ...(Depneding on relevance you can add none, or N number of Links)
+  ...(Depending on relevance you can add none, or N number of Links)
 
 Begin!
 
