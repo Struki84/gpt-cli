@@ -18,15 +18,15 @@ type MetaphorClient struct {
 
 type SearchRequestBody struct {
 	Query              string   `json:"query"`
-	NumResults         int      `json:"numResults"`
-	IncludeDomains     []string `json:"includeDomains"`
-	ExcludeDomains     []string `json:"excludeDomains"`
-	StartCrawlDate     string   `json:"startCrawlDate"`
-	EndCrawlDate       string   `json:"endCrawlDate"`
-	StartPublishedDate string   `json:"startPublishedDate"`
-	EndPublishedDate   string   `json:"endPublishedDate"`
-	UseAutoprompt      bool     `json:"useAutoprompt"`
-	Type               string   `json:"type"`
+	NumResults         int      `json:"numResults,omitempty"`
+	IncludeDomains     []string `json:"includeDomains,omitempty"`
+	ExcludeDomains     []string `json:"excludeDomains,omitempty"`
+	StartCrawlDate     string   `json:"startCrawlDate,omitempty"`
+	EndCrawlDate       string   `json:"endCrawlDate,omitempty"`
+	StartPublishedDate string   `json:"startPublishedDate,omitempty"`
+	EndPublishedDate   string   `json:"endPublishedDate,omitempty"`
+	UseAutoprompt      bool     `json:"useAutoprompt,omitempty"`
+	Type               string   `json:"type,omitempty"`
 }
 
 type SearchResultBody struct {
@@ -38,7 +38,7 @@ type SearchResultBody struct {
 	Id            string  `json:"id"`
 }
 type SearchResponse struct {
-	Results []SearchResultBody
+	Results []SearchResultBody `json:"results"`
 }
 
 type ContentsResult struct {
@@ -49,7 +49,7 @@ type ContentsResult struct {
 }
 
 type ContentsResponse struct {
-	Contents []ContentsResult
+	Contents []ContentsResult `json:"contents"`
 }
 
 const (
@@ -58,22 +58,20 @@ const (
 	DefaultContentsURL = "https://api.metaphor.systems/contents"
 )
 
-var ErrNoGoodSearchResult = errors.New("no good search results found")
+var (
+	ErrNoGoodSearchResult  = errors.New("no good search results found")
+	ErrSearchRequestFailed = errors.New("search request failed")
+)
 
 func NewClient(apiKey string, options ...ClientOptions) (*MetaphorClient, error) {
 	client := &MetaphorClient{
 		apiKey: apiKey,
 		RequestBody: SearchRequestBody{
-			Query:              "",
-			NumResults:         DefaultNumResults,
-			IncludeDomains:     []string{},
-			ExcludeDomains:     []string{},
-			StartCrawlDate:     "",
-			EndCrawlDate:       "",
-			StartPublishedDate: "",
-			EndPublishedDate:   "",
-			UseAutoprompt:      true,
-			Type:               "neural",
+			NumResults:     DefaultNumResults,
+			IncludeDomains: []string{},
+			ExcludeDomains: []string{},
+			UseAutoprompt:  true,
+			Type:           "neural",
 		},
 	}
 
@@ -112,16 +110,19 @@ func (client *MetaphorClient) Search(ctx context.Context, query string) (string,
 		return "", err
 	}
 
-	var finalResults []map[string]interface{}
+	var formatedResults string
 	if res.StatusCode != http.StatusOK {
-
-		finalResults, err = client.parseResponse(ctx, body)
-		if err != nil {
-			return "", err
-		}
+		fmt.Println("status code", res.StatusCode)
+		return "", ErrSearchRequestFailed
 	}
 
-	formatedResults := client.formatResults(finalResults)
+	finalResults, err := client.parseResponse(ctx, body)
+	if err != nil {
+		return "", err
+	}
+
+	formatedResults = client.formatResults(finalResults)
+
 	return formatedResults, nil
 }
 
@@ -133,15 +134,18 @@ func (client *MetaphorClient) parseResponse(ctx context.Context, body []byte) ([
 	}
 
 	finalResults := make([]map[string]interface{}, 0)
-	for key, result := range searchResults.Results {
-		finalResults[key]["title"] = result.Title
-		finalResults[key]["url"] = result.Url
+	for _, result := range searchResults.Results {
+		content := map[string]interface{}{}
+
+		content["title"] = result.Title
+		content["url"] = result.Url
 
 		cotents, err := client.getContents(ctx, []string{result.Id})
 		if err != nil {
 			return finalResults, err
 		}
-		finalResults[key]["contents"] = cotents
+		content["contents"] = cotents
+		finalResults = append(finalResults, content)
 	}
 
 	return finalResults, nil
