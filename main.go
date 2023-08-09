@@ -15,7 +15,7 @@ import (
 	"gpt/browser"
 	"gpt/chat"
 	"gpt/read"
-	"gpt/util/tools"
+	"gpt/util/tools/metaphor"
 )
 
 var rootCmd = &cobra.Command{
@@ -26,8 +26,9 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	var config struct {
-		OpenAPIKey string `yaml:"open_api_key"`
-		SerpAPIKey string `yaml:"serpapi_api_key"`
+		OpenAPIKey     string `yaml:"open_api_key"`
+		SerpAPIKey     string `yaml:"serpapi_api_key"`
+		MetaphorAPIKey string `yaml:"metaphor_api_key"`
 	}
 
 	yamlFile, err := os.ReadFile("./keys.yaml")
@@ -47,6 +48,12 @@ func init() {
 	}
 
 	err = os.Setenv("SERPAPI_API_KEY", config.SerpAPIKey)
+	if err != nil {
+		fmt.Println("Error setting environment variable:", err)
+		return
+	}
+
+	err = os.Setenv("METAPHOR_API_KEY", config.MetaphorAPIKey)
 	if err != nil {
 		fmt.Println("Error setting environment variable:", err)
 		return
@@ -115,16 +122,28 @@ func init() {
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
 
-			key := os.Getenv("SERPAPI_API_KEY")
-			search := tools.NewSearch(
-				tools.WithApiKey(key),
-				tools.WithMaxResults(5),
-			)
+			metaphor, err := metaphor.NewSearch()
+			if err != nil {
+				fmt.Println(err)
+			}
 
-			result, err := search.Search(context.Background(), args[0])
+			response, err := metaphor.Call(context.Background(), args[0])
 			if err != nil {
 				fmt.Print(err)
 			}
+
+			fmt.Println(response)
+
+			// key := os.Getenv("SERPAPI_API_KEY")
+			// search := tools.NewSearch(
+			// 	tools.WithApiKey(key),
+			// 	tools.WithMaxResults(5),
+			// )
+
+			// result, err := search.Search(context.Background(), args[0])
+			// if err != nil {
+			// 	fmt.Print(err)
+			// }
 
 			// scraper, err := scraper.NewScraper()
 			// if err != nil {
@@ -136,7 +155,7 @@ func init() {
 			// 	fmt.Println(err)
 			// }
 
-			fmt.Println(result)
+			// fmt.Println(result)
 		},
 	}
 
