@@ -14,11 +14,9 @@ type MetaphorSearch struct {
 	client *internal.MetaphorClient
 }
 
-var (
-	_ tools.Tool = &MetaphorSearch{}
+var _ tools.Tool = &MetaphorSearch{}
 
-	ErrMissingToken = errors.New("missing the Metaphor API key, set it in the METAPHOR_API_KEY environment variable")
-)
+var ErrMissingToken = errors.New("missing the Metaphor API key, set it as the METAPHOR_API_KEY environment variable")
 
 func NewSearch(options ...internal.ClientOptions) (*MetaphorSearch, error) {
 	apiKey := os.Getenv("METAPHOR_API_KEY")
@@ -58,7 +56,7 @@ func (tool *MetaphorSearch) Call(ctx context.Context, input string) (string, err
 	response, err := tool.client.Search(ctx, input)
 	if err != nil {
 		if errors.Is(err, internal.ErrNoSearchResults) {
-			return "Metaphor seach didn't return any results", nil
+			return "Metaphor Search didn't return any results", nil
 		}
 		return "", err
 	}

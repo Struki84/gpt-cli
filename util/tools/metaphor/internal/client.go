@@ -57,6 +57,7 @@ var (
 	ErrGetContentsFailed      = errors.New("get contents failed with error")
 	ErrNoSearchResults        = errors.New("no search results were found")
 	ErrNoLinksFound           = errors.New("no links were found")
+	ErrNoContentExtracted     = errors.New("no content was extracted")
 )
 
 func NewClient(apiKey string, options ...ClientOptions) (*MetaphorClient, error) {
@@ -164,6 +165,10 @@ func (client *MetaphorClient) GetContents(ctx context.Context, ids []string) (*C
 	err = json.Unmarshal(responseBody, &contentsResults)
 	if err != nil {
 		return contentsResults, fmt.Errorf("%v: %w", ErrGetContentsFailed, err)
+	}
+
+	if len(contentsResults.Contents) == 0 {
+		return contentsResults, ErrNoSearchResults
 	}
 
 	return contentsResults, nil
