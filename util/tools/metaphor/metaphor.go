@@ -3,6 +3,7 @@ package metaphor
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gpt/util/tools/metaphor/internal"
 	"os"
 
@@ -63,4 +64,14 @@ func (tool *MetaphorSearch) Call(ctx context.Context, input string) (string, err
 	}
 
 	return result, nil
+}
+
+func (client *MetaphorSearch) formatResults(results []map[string]interface{}) string {
+	formattedResults := ""
+
+	for _, result := range results {
+		formattedResults += fmt.Sprintf("Title: %s\nContent: %s\nURL: %s\n\n", result["title"], result["contents"], result["url"])
+	}
+
+	return formattedResults
 }
