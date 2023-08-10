@@ -55,6 +55,8 @@ var (
 	ErrSearchFailed           = errors.New("search failed with error")
 	ErrFindSimilarLinkdFailed = errors.New("find similar links failed with error")
 	ErrGetContentsFailed      = errors.New("get contents failed with error")
+	ErrNoSearchResults        = errors.New("no search results were found")
+	ErrNoLinksFound           = errors.New("no links were found")
 )
 
 func NewClient(apiKey string, options ...ClientOptions) (*MetaphorClient, error) {
@@ -102,6 +104,10 @@ func (client *MetaphorClient) Search(ctx context.Context, query string, options 
 		return nil, fmt.Errorf("%v: %w", ErrSearchFailed, err)
 	}
 
+	if len(searchResults.Results) == 0 {
+		return searchResults, ErrNoSearchResults
+	}
+
 	return searchResults, nil
 }
 
@@ -131,6 +137,10 @@ func (client *MetaphorClient) FindSimilar(ctx context.Context, url string, optio
 	err = json.Unmarshal(responseBody, &searchResults)
 	if err != nil {
 		return searchResults, fmt.Errorf("%v: %w", ErrFindSimilarLinkdFailed, err)
+	}
+
+	if len(searchResults.Results) == 0 {
+		return searchResults, ErrNoLinksFound
 	}
 
 	return searchResults, nil

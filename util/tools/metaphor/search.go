@@ -55,22 +55,22 @@ func (tool *MetaphorSearch) Description() string {
 }
 
 func (tool *MetaphorSearch) Call(ctx context.Context, input string) (string, error) {
-	result, err := tool.client.Search(ctx, input)
+	response, err := tool.client.Search(ctx, input)
 	if err != nil {
-		if errors.Is(err, internal.ErrNoGoodSearchResult) {
-			return "No good Metaphor Search Results was found", nil
+		if errors.Is(err, internal.ErrNoSearchResults) {
+			return "Metaphor seach didn't return any results", nil
 		}
-		return "", nil
+		return "", err
 	}
 
-	return result, nil
+	return tool.formatResults(response), nil
 }
 
-func (client *MetaphorSearch) formatResults(results []map[string]interface{}) string {
+func (tool *MetaphorSearch) formatResults(response *internal.SearchResponse) string {
 	formattedResults := ""
 
-	for _, result := range results {
-		formattedResults += fmt.Sprintf("Title: %s\nContent: %s\nURL: %s\n\n", result["title"], result["contents"], result["url"])
+	for _, result := range response.Results {
+		formattedResults += fmt.Sprintf("Title: %s\nURL: %s\n\n", result.Title, result.Url)
 	}
 
 	return formattedResults
