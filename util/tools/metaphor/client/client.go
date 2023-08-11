@@ -17,7 +17,7 @@ type MetaphorClient struct {
 }
 
 type SearchRequestBody struct {
-	Query              string   `json:"query"`
+	Query              string   `json:"query,omitempty"`
 	Url                string   `json:"url,omitempty"`
 	NumResults         int      `json:"numResults,omitempty"`
 	IncludeDomains     []string `json:"includeDomains,omitempty"`
@@ -118,7 +118,9 @@ func (client *MetaphorClient) FindSimilar(ctx context.Context, url string, optio
 	}
 
 	searchResults := &SearchResponse{}
-	client.RequestBody.Query = url
+	client.RequestBody.Url = url
+	client.RequestBody.UseAutoprompt = false
+	client.RequestBody.Type = ""
 
 	reqBytes, err := json.Marshal(client.RequestBody)
 	if err != nil {

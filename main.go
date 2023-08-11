@@ -16,6 +16,7 @@ import (
 	"gpt/chat"
 	"gpt/read"
 	"gpt/util/tools/metaphor"
+	"gpt/util/tools/metaphor/client"
 )
 
 var rootCmd = &cobra.Command{
@@ -122,29 +123,56 @@ func init() {
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
 
-			search, err := metaphor.NewSearch()
+			search, err := metaphor.NewSearch(
+				client.WithAutoprompt(true),
+			)
 			if err != nil {
 				fmt.Println(err)
+				return
 			}
 
 			response, err := search.Call(context.Background(), args[0])
 			if err != nil {
 				fmt.Print(err)
+				return
 			}
 
+			fmt.Println("Search Results:")
 			fmt.Println(response)
 
-			// document, err := metaphor.NewDocuments()
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
+			document, err := metaphor.NewDocuments()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 
-			// contents, err := document.Call(context.Background(), "")
-			// if err != nil {
-			// 	fmt.Print(err)
-			// }
+			contents, err := document.Call(context.Background(), "NlmibOCRhQqIaknRQqvWtQ")
+			if err != nil {
+				fmt.Print(err)
+				return
+			}
 
-			// fmt.Println(contents)
+			fmt.Println("RDJ Twitter contents:")
+			fmt.Println(contents)
+
+			searchLinks, err := metaphor.NewLinksSearch(
+				client.WithAutoprompt(true),
+				client.WithNumResults(5),
+			)
+
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			similarLinks, err := searchLinks.Call(context.Background(), "https://www.wikidata.org/wiki/Q587102")
+			if err != nil {
+				fmt.Print(err)
+				return
+			}
+
+			fmt.Println("Similar links:")
+			fmt.Println(similarLinks)
 
 			// key := os.Getenv("SERPAPI_API_KEY")
 			// search := tools.NewSearch(
