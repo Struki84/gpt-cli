@@ -123,40 +123,39 @@ func init() {
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
 
-			search, err := metaphor.NewSearch(
-				client.WithAutoprompt(true),
-			)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			// search, err := metaphor.NewSearch(
+			// 	client.WithAutoprompt(true),
+			// )
+			// if err != nil {
+			// 	fmt.Println(err)
+			// 	return
+			// }
 
-			response, err := search.Call(context.Background(), args[0])
-			if err != nil {
-				fmt.Print(err)
-				return
-			}
+			// response, err := search.Call(context.Background(), args[0])
+			// if err != nil {
+			// 	fmt.Print(err)
+			// 	return
+			// }
 
-			fmt.Println("Search Results:")
-			fmt.Println(response)
+			// fmt.Println("Search Results:")
+			// fmt.Println(response)
 
-			document, err := metaphor.NewDocuments()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			// document, err := metaphor.NewDocuments()
+			// if err != nil {
+			// 	fmt.Println(err)
+			// 	return
+			// }
 
-			contents, err := document.Call(context.Background(), "NlmibOCRhQqIaknRQqvWtQ")
-			if err != nil {
-				fmt.Print(err)
-				return
-			}
+			// contents, err := document.Call(context.Background(), "NlmibOCRhQqIaknRQqvWtQ")
+			// if err != nil {
+			// 	fmt.Print(err)
+			// 	return
+			// }
 
-			fmt.Println("RDJ Twitter contents:")
-			fmt.Println(contents)
+			// fmt.Println("RDJ Twitter contents:")
+			// fmt.Println(contents)
 
 			searchLinks, err := metaphor.NewLinksSearch(
-				client.WithAutoprompt(true),
 				client.WithNumResults(5),
 			)
 

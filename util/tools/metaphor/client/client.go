@@ -13,10 +13,10 @@ import (
 
 type MetaphorClient struct {
 	apiKey      string
-	RequestBody SearchRequestBody
+	RequestBody RequestBody
 }
 
-type SearchRequestBody struct {
+type RequestBody struct {
 	Query              string   `json:"query,omitempty"`
 	Url                string   `json:"url,omitempty"`
 	NumResults         int      `json:"numResults,omitempty"`
@@ -36,9 +36,8 @@ const (
 	// DefaultNumResults is the default number of expected results
 	DefaultNumResults = 10
 	// DefaultAutoprompt if true, your query will be converted to a Metaphor query.
+	// If findLinks ednpoint is used needs to be nil to omit useAutoprompt filed from RequestBody
 	DefaultAutoprompt = false
-	// DefaultType determines the type of search, keyword or neural
-	DefaultType = "neural"
 
 	// DEFAULT API ENDPOINT URL's
 
@@ -63,10 +62,9 @@ var (
 func NewClient(apiKey string, options ...ClientOptions) (*MetaphorClient, error) {
 	client := &MetaphorClient{
 		apiKey: apiKey,
-		RequestBody: SearchRequestBody{
+		RequestBody: RequestBody{
 			NumResults:    DefaultNumResults,
 			UseAutoprompt: DefaultAutoprompt,
-			Type:          DefaultType,
 		},
 	}
 
@@ -119,8 +117,6 @@ func (client *MetaphorClient) FindSimilar(ctx context.Context, url string, optio
 
 	searchResults := &SearchResponse{}
 	client.RequestBody.Url = url
-	client.RequestBody.UseAutoprompt = false
-	client.RequestBody.Type = ""
 
 	reqBytes, err := json.Marshal(client.RequestBody)
 	if err != nil {
