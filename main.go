@@ -122,17 +122,29 @@ func init() {
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
 
-			metaphor, err := metaphor.NewSearch()
+			search, err := metaphor.NewSearch()
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			response, err := metaphor.Call(context.Background(), args[0])
+			response, err := search.Call(context.Background(), args[0])
 			if err != nil {
 				fmt.Print(err)
 			}
 
 			fmt.Println(response)
+
+			// document, err := metaphor.NewDocuments()
+			// if err != nil {
+			// 	fmt.Println(err)
+			// }
+
+			// contents, err := document.Call(context.Background(), "")
+			// if err != nil {
+			// 	fmt.Print(err)
+			// }
+
+			// fmt.Println(contents)
 
 			// key := os.Getenv("SERPAPI_API_KEY")
 			// search := tools.NewSearch(

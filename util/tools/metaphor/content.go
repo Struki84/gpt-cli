@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gpt/util/tools/metaphor/internal"
+	"gpt/util/tools/metaphor/client"
 	"os"
 	"strings"
 
@@ -12,18 +12,18 @@ import (
 )
 
 type MetaphorContents struct {
-	client *internal.MetaphorClient
+	client *client.MetaphorClient
 }
 
 var _ tools.Tool = &MetaphorContents{}
 
-func NewContents(options ...internal.ClientOptions) (*MetaphorContents, error) {
+func NewDocuments(options ...client.ClientOptions) (*MetaphorContents, error) {
 	apiKey := os.Getenv("METAPHOR_API_KEY")
 	if apiKey == "" {
 		return nil, ErrMissingToken
 	}
 
-	client, err := internal.NewClient(apiKey, options...)
+	client, err := client.NewClient(apiKey, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (tool *MetaphorContents) Call(ctx context.Context, input string) (string, e
 
 	contents, err := tool.client.GetContents(ctx, ids)
 	if err != nil {
-		if errors.Is(err, internal.ErrNoContentExtracted) {
+		if errors.Is(err, client.ErrNoContentExtracted) {
 			return "Metaphor Extractor didn't return any results", nil
 		}
 		return "", err
@@ -65,7 +65,7 @@ func (tool *MetaphorContents) Call(ctx context.Context, input string) (string, e
 	return tool.formatContents(contents), nil
 }
 
-func (tool *MetaphorContents) formatContents(response *internal.ContentsResponse) string {
+func (tool *MetaphorContents) formatContents(response *client.ContentsResponse) string {
 	formattedResults := ""
 
 	for _, result := range response.Contents {

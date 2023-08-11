@@ -4,27 +4,27 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gpt/util/tools/metaphor/internal"
+	"gpt/util/tools/metaphor/client"
 	"os"
 
 	"github.com/tmc/langchaingo/tools"
 )
 
 type MetaphorSearch struct {
-	client *internal.MetaphorClient
+	client *client.MetaphorClient
 }
 
 var _ tools.Tool = &MetaphorSearch{}
 
 var ErrMissingToken = errors.New("missing the Metaphor API key, set it as the METAPHOR_API_KEY environment variable")
 
-func NewSearch(options ...internal.ClientOptions) (*MetaphorSearch, error) {
+func NewSearch(options ...client.ClientOptions) (*MetaphorSearch, error) {
 	apiKey := os.Getenv("METAPHOR_API_KEY")
 	if apiKey == "" {
 		return nil, ErrMissingToken
 	}
 
-	client, err := internal.NewClient(apiKey, options...)
+	client, err := client.NewClient(apiKey, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (tool *MetaphorSearch) Description() string {
 func (tool *MetaphorSearch) Call(ctx context.Context, input string) (string, error) {
 	response, err := tool.client.Search(ctx, input)
 	if err != nil {
-		if errors.Is(err, internal.ErrNoSearchResults) {
+		if errors.Is(err, client.ErrNoSearchResults) {
 			return "Metaphor Search didn't return any results", nil
 		}
 		return "", err
@@ -64,11 +64,11 @@ func (tool *MetaphorSearch) Call(ctx context.Context, input string) (string, err
 	return tool.formatResults(response), nil
 }
 
-func (tool *MetaphorSearch) formatResults(response *internal.SearchResponse) string {
+func (tool *MetaphorSearch) formatResults(response *client.SearchResponse) string {
 	formattedResults := ""
 
 	for _, result := range response.Results {
-		formattedResults += fmt.Sprintf("Title: %s\nURL: %s\n\n", result.Title, result.Url)
+		formattedResults += fmt.Sprintf("Title: %s\nURL: %s\nID: %s\n\n", result.Title, result.Url, result.Id)
 	}
 
 	return formattedResults
