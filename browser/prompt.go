@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gpt/util/memory"
-	"gpt/util/scraper"
+	"gpt/util/tools/scraper"
 	"log"
 	"os"
 	"strings"
@@ -31,7 +31,7 @@ func Prompt(input string) string {
 	dsn := "host=localhost user=gpt-admin password=gpt-password dbname=gpt-db port=5432"
 	memory := memory.NewPostgreBuffer(dsn)
 
-	ddg, err := duckduckgo.New(5, "")
+	ddg, err := duckduckgo.New(5, duckduckgo.DefaultUserAgent)
 	if err != nil {
 		log.Print(err)
 	}
@@ -41,7 +41,7 @@ func Prompt(input string) string {
 		log.Print(err)
 	}
 
-	scraper, err := scraper.NewScraper()
+	scraper, err := scraper.New()
 	if err != nil {
 		log.Print(err)
 	}
@@ -82,7 +82,7 @@ func Prompt(input string) string {
 		return ""
 	}
 
-	return answer	
+	return answer
 }
 
 func toolNames(tools []tools.Tool) string {

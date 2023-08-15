@@ -1,52 +1,56 @@
+// trunk-ignore(golangci-lint/dupl)
 package metaphor
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"gpt/util/tools/metaphor/client"
 	"os"
 
+	"github.com/metaphorsystems/metaphor-go"
 	"github.com/tmc/langchaingo/tools"
 )
 
-type MetaphorLinksSearch struct {
-	client *client.MetaphorClient
+type LinksSearch struct {
+	client  *metaphor.Client
+	options []metaphor.ClientOptions
 }
 
-var _ tools.Tool = &MetaphorLinksSearch{}
+var _ tools.Tool = &LinksSearch{}
 
-func NewLinksSearch(options ...client.ClientOptions) (*MetaphorLinksSearch, error) {
+func NewLinksSearch(options ...metaphor.ClientOptions) (*LinksSearch, error) {
 	apiKey := os.Getenv("METAPHOR_API_KEY")
-	if apiKey == "" {
-		return nil, ErrMissingToken
-	}
 
-	client, err := client.NewClient(apiKey, options...)
+	client, err := metaphor.NewClient(apiKey, options...)
 	if err != nil {
 		return nil, err
 	}
-	metaphor := &MetaphorLinksSearch{
-		client: client,
+	metaphor := &LinksSearch{
+		client:  client,
+		options: options,
 	}
 
 	return metaphor, nil
 }
 
-func (tool *MetaphorLinksSearch) Name() string {
+func (tool *LinksSearch) SetOptions(options ...metaphor.ClientOptions) {
+	tool.options = options
+}
+
+func (tool *LinksSearch) Name() string {
 	return "Metaphor Links Search"
 }
 
-func (tool *MetaphorLinksSearch) Description() string {
+func (tool *LinksSearch) Description() string {
 	return `
 	Metaphor Links Search finds similar links to the link provided.
 	Input should be the url string for which you would like to find similar links`
 }
 
-func (tool *MetaphorLinksSearch) Call(ctx context.Context, input string) (string, error) {
-	links, err := tool.client.FindSimilar(ctx, input)
+func (tool *LinksSearch) Call(ctx context.Context, input string) (string, error) {
+	links, err := tool.client.FindSimilar(ctx, input, tool.options...)
 	if err != nil {
-		if errors.Is(err, client.ErrNoLinksFound) {
+		if errors.Is(err, metaphor.ErrNoLinksFound) {
 			return "Metaphor Links Search didn't return any results", nil
 		}
 		return "", err
@@ -55,11 +59,11 @@ func (tool *MetaphorLinksSearch) Call(ctx context.Context, input string) (string
 	return tool.formatLinks(links), nil
 }
 
-func (tool *MetaphorLinksSearch) formatLinks(response *client.SearchResponse) string {
+func (tool *LinksSearch) formatLinks(response *metaphor.SearchResponse) string {
 	formattedResults := ""
 
 	for _, result := range response.Results {
-		formattedResults += fmt.Sprintf("Title: %s\nURL: %s\nID: %s\n\n", result.Title, result.Url, result.Id)
+		formattedResults += fmt.Sprintf("Title: %s\nURL: %s\nID: %s\n\n", result.Title, result.URL, result.ID)
 	}
 
 	return formattedResults

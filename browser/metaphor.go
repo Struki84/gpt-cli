@@ -3,8 +3,10 @@ package browser
 import (
 	"context"
 	"fmt"
+
 	"gpt/util/tools/metaphor"
-	"gpt/util/tools/metaphor/client"
+
+	options "github.com/metaphorsystems/metaphor-go"
 
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/chains"
@@ -23,9 +25,9 @@ func MetaphorPrompt(input string) {
 	}
 
 	search, err := metaphor.NewSearch(
-		client.WithAutoprompt(true),
-		client.WithNumResults(5),
-		client.WithType("neural"),
+		options.WithAutoprompt(true),
+		options.WithNumResults(5),
+		options.WithType("neural"),
 	)
 
 	if err != nil {

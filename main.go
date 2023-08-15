@@ -15,8 +15,7 @@ import (
 	"gpt/browser"
 	"gpt/chat"
 	"gpt/read"
-	"gpt/util/tools/metaphor"
-	"gpt/util/tools/metaphor/client"
+	"gpt/util/tools/scraper"
 )
 
 var rootCmd = &cobra.Command{
@@ -155,23 +154,23 @@ func init() {
 			// fmt.Println("RDJ Twitter contents:")
 			// fmt.Println(contents)
 
-			searchLinks, err := metaphor.NewLinksSearch(
-				client.WithNumResults(5),
-			)
+			// searchLinks, err := metaphor.NewLinksSearch(
+			// 	client.WithNumResults(5),
+			// )
 
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+			// if err != nil {
+			// 	fmt.Println(err)
+			// 	return
+			// }
 
-			similarLinks, err := searchLinks.Call(context.Background(), "https://www.wikidata.org/wiki/Q587102")
-			if err != nil {
-				fmt.Print(err)
-				return
-			}
+			// similarLinks, err := searchLinks.Call(context.Background(), "https://www.wikidata.org/wiki/Q587102")
+			// if err != nil {
+			// 	fmt.Print(err)
+			// 	return
+			// }
 
-			fmt.Println("Similar links:")
-			fmt.Println(similarLinks)
+			// fmt.Println("Similar links:")
+			// fmt.Println(similarLinks)
 
 			// key := os.Getenv("SERPAPI_API_KEY")
 			// search := tools.NewSearch(
@@ -184,17 +183,19 @@ func init() {
 			// 	fmt.Print(err)
 			// }
 
-			// scraper, err := scraper.NewScraper()
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
+			scraper, err := scraper.New(
+				scraper.WithAsync(false),
+			)
+			if err != nil {
+				fmt.Println(err)
+			}
 
-			// result, err := scraper.Call(context.Background(), args[0])
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
+			result, err := scraper.Call(context.Background(), args[0])
+			if err != nil {
+				fmt.Println(err)
+			}
 
-			// fmt.Println(result)
+			fmt.Println(result)
 		},
 	}
 
