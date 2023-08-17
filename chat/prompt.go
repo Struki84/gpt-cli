@@ -13,7 +13,7 @@ import (
 )
 
 func Prompt(input string) string {
-	llm, err := openai.New(openai.WithModel("gpt-3.5-turbo-16k"))
+	llm, err := openai.NewChat(openai.WithModel("gpt-4"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,7 +36,7 @@ func Prompt(input string) string {
 		agentTools,
 		agents.ConversationalReactDescription,
 		agents.WithMemory(memory),
-		// agents.WithReturnIntermediateSteps(), This throws an error need to open issue
+		agents.WithReturnIntermediateSteps(), // This throws an error need to open issue
 	)
 
 	if err != nil {

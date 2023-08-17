@@ -188,6 +188,8 @@ github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80 h1:6Yzfa6GP0rIo/kUL
 github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80/go.mod h1:imJHygn/1yfhB7XSJJKlFZKl/J+dCPAknuiaGOshXAs=
 github.com/metaphorsystems/metaphor-go v0.0.0-20230814050149-2313604752f0 h1:lpOiDAgzb05xrCi5uQNZldGTVFJIa4BG52wJAxgS1KE=
 github.com/metaphorsystems/metaphor-go v0.0.0-20230814050149-2313604752f0/go.mod h1:mDz8kHE7x6Ja95drCQ2T1vLyPRc/t69Cf3wau91E3QU=
+github.com/metaphorsystems/metaphor-go v0.0.0-20230816231421-43794c04824e h1:4N462rhrxy7KezYYyL3RjJPWlhXiSkfFes0YsMqicd0=
+github.com/metaphorsystems/metaphor-go v0.0.0-20230816231421-43794c04824e/go.mod h1:mDz8kHE7x6Ja95drCQ2T1vLyPRc/t69Cf3wau91E3QU=
 github.com/microcosm-cc/bluemonday v1.0.24 h1:NGQoPtwGVcbGkKfvyYk1yRqknzBuoMiUrO6R7uFTPlw=
 github.com/microcosm-cc/bluemonday v1.0.24/go.mod h1:ArQySAMps0790cHSkdPEJ7bGkF2VePWH773hsJNSHf8=
 github.com/mitchellh/copystructure v1.0.0 h1:Laisrj+bAB6b/yJwB5Bt3ITZhGJdqmxquMKeZ+mmkFQ=

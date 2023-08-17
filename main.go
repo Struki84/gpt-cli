@@ -15,7 +15,6 @@ import (
 	"gpt/browser"
 	"gpt/chat"
 	"gpt/read"
-	"gpt/util/tools/scraper"
 )
 
 var rootCmd = &cobra.Command{
@@ -122,6 +121,8 @@ func init() {
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
 
+			browser.MetaphorPrompt(args[0])
+
 			// search, err := metaphor.NewSearch(
 			// 	client.WithAutoprompt(true),
 			// )
@@ -183,19 +184,19 @@ func init() {
 			// 	fmt.Print(err)
 			// }
 
-			scraper, err := scraper.New(
-				scraper.WithAsync(false),
-			)
-			if err != nil {
-				fmt.Println(err)
-			}
+			// scraper, err := scraper.New(
+			// 	scraper.WithAsync(false),
+			// )
+			// if err != nil {
+			// 	fmt.Println(err)
+			// }
 
-			result, err := scraper.Call(context.Background(), args[0])
-			if err != nil {
-				fmt.Println(err)
-			}
+			// result, err := scraper.Call(context.Background(), args[0])
+			// if err != nil {
+			// 	fmt.Println(err)
+			// }
 
-			fmt.Println(result)
+			// fmt.Println(result)
 		},
 	}
 

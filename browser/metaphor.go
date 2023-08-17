@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"gpt/util/memory"
 	"gpt/util/tools/metaphor"
 
 	options "github.com/metaphorsystems/metaphor-go"
@@ -51,10 +52,15 @@ func MetaphorPrompt(input string) {
 		},
 	}
 
+	dsn := "host=localhost user=gpt-admin password=gpt-password dbname=gpt-db port=5432"
+	agentMemory := memory.NewPostgreBuffer(dsn)
+	agentMemory.SetSession("USID-003")
+
 	executor, err := agents.Initialize(
 		llm,
 		tools,
 		agents.ZeroShotReactDescription,
+		agents.WithMemory(agentMemory),
 		agents.WithPrompt(tmpl),
 	)
 
@@ -62,7 +68,9 @@ func MetaphorPrompt(input string) {
 		fmt.Println(err)
 	}
 
-	answer, err := chains.Run(context.Background(), executor, input)
+	ctx := context.Background()
+
+	answer, err := chains.Run(ctx, executor, input)
 	if err != nil {
 		fmt.Println(err)
 	}

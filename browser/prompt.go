@@ -22,7 +22,7 @@ func Prompt(input string) string {
 	var err error
 
 	llm, err := openai.NewChat(
-		openai.WithModel("gpt-3.5-turbo-16k"),
+		openai.WithModel("gpt-4"),
 	)
 	if err != nil {
 		log.Print(err)
