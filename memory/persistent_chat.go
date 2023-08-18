@@ -57,8 +57,6 @@ func NewPersistentChatHistory(dsn string) *PersistentChatHistory {
 		fmt.Println(err)
 		return nil
 	}
-
-	fmt.Println("Chat history created!")
 	return history
 }
 
@@ -67,13 +65,10 @@ func (history *PersistentChatHistory) GetSessionID() string {
 }
 
 func (history *PersistentChatHistory) SetSessionID(id string) {
-	fmt.Println("Set session id", id)
 	history.sessionID = id
 }
 
 func (history *PersistentChatHistory) Messages() ([]schema.ChatMessage, error) {
-	fmt.Println("Get messages")
-	fmt.Println("session id:", history.sessionID)
 	if history.sessionID == "" {
 		return []schema.ChatMessage{}, ErrMissingSessionID
 	}

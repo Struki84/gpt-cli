@@ -111,7 +111,7 @@ func toolDescriptions(tools []tools.Tool) string {
 }
 
 func loadPromptTxToString() string {
-	prompt, err := os.ReadFile("./browser/prompt.txt")
+	prompt, err := os.ReadFile("./agents/search/prompt.txt")
 	if err != nil {
 		log.Print("Error reading prompt file:", err)
 	}

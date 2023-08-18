@@ -52,10 +52,15 @@ func (tool *Documents) Description() string {
 }
 
 func (tool *Documents) Call(ctx context.Context, input string) (string, error) {
+	fmt.Println("Metaphor contents called with input:")
+	fmt.Println("string:", input)
+
 	ids := strings.Split(input, ",")
 	for i, id := range ids {
 		ids[i] = strings.TrimSpace(id)
 	}
+
+	fmt.Println("map ids:", ids)
 
 	contents, err := tool.client.GetContents(ctx, ids)
 	if err != nil {
@@ -75,5 +80,7 @@ func (tool *Documents) formatContents(response *metaphor.ContentsResponse) strin
 		formattedResults += fmt.Sprintf("Title: %s\nContent: %s\nURL: %s\n\n", result.Title, result.Extract, result.URL)
 	}
 
+	fmt.Println("Metaphor Contents Results:")
+	fmt.Println(formattedResults)
 	return formattedResults
 }

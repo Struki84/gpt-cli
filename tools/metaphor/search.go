@@ -54,6 +54,7 @@ func (tool *Search) Description() string {
 }
 
 func (tool *Search) Call(ctx context.Context, input string) (string, error) {
+	fmt.Println("Metaphor Search called with input:", input)
 	response, err := tool.client.Search(ctx, input, tool.options...)
 	if err != nil {
 		if errors.Is(err, metaphor.ErrNoSearchResults) {
@@ -72,5 +73,7 @@ func (tool *Search) formatResults(response *metaphor.SearchResponse) string {
 		formattedResults += fmt.Sprintf("Title: %s\nURL: %s\nID: %s\n\n", result.Title, result.URL, result.ID)
 	}
 
+	fmt.Println("Metaphor Search Results:")
+	fmt.Println(formattedResults)
 	return formattedResults
 }

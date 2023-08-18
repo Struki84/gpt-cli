@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/gocolly/colly v1.2.0
 	github.com/google/uuid v1.3.0
+	github.com/metaphorsystems/metaphor-go v0.0.0-20230816231421-43794c04824e
 	github.com/spf13/cobra v1.7.0
 	github.com/tmc/langchaingo v0.0.0-20230726025230-7d5f9fd5e90a
 	gopkg.in/yaml.v2 v2.4.0
@@ -60,6 +61,5 @@ require (
 
 require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/metaphorsystems/metaphor-go v0.0.0-20230816231421-43794c04824e // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 )

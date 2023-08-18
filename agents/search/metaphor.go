@@ -18,6 +18,8 @@ import (
 )
 
 func MetaphorPrompt(input string) {
+
+	// create llm
 	llm, err := openai.NewChat(
 		openai.WithModel("gpt-4"),
 	)
@@ -26,9 +28,17 @@ func MetaphorPrompt(input string) {
 		fmt.Println(err)
 	}
 
+	// setup persistent chat memory
+	dsn := "host=localhost user=gpt-admin password=gpt-password dbname=gpt-db port=5432"
+	chatHistory := memory.NewPersistentChatHistory(dsn)
+	agentMemory := lc_memory.NewConversationBuffer(lc_memory.WithChatHistory(chatHistory))
+
+	chatHistory.SetSessionID("USID-003")
+
+	// create search tools
 	search, err := metaphor.NewSearch(
 		options.WithAutoprompt(true),
-		options.WithNumResults(5),
+		options.WithNumResults(3),
 		options.WithType("neural"),
 	)
 
@@ -43,12 +53,7 @@ func MetaphorPrompt(input string) {
 
 	tools := []tools.Tool{search, documents}
 
-	dsn := "host=localhost user=gpt-admin password=gpt-password dbname=gpt-db port=5432"
-	chatHistory := memory.NewPersistentChatHistory(dsn)
-	agentMemory := lc_memory.NewConversationBuffer(lc_memory.WithChatHistory(chatHistory))
-
-	chatHistory.SetSessionID("USID-003")
-
+	// build agent prompt template
 	tmpl := prompts.PromptTemplate{
 		Template:       loadPromptTxToString(),
 		TemplateFormat: prompts.TemplateFormatGoTemplate,
@@ -59,23 +64,19 @@ func MetaphorPrompt(input string) {
 		},
 	}
 
-	executor, err := agents.Initialize(
-		llm,
-		tools,
-		agents.ZeroShotReactDescription,
+	// create agent options
+	agentOptions := []agents.CreationOption{
 		agents.WithMemory(agentMemory),
 		agents.WithPrompt(tmpl),
-		agents.WithMaxIterations(5),
-		// agents.WithReturnIntermediateSteps(),
-	)
-
-	if err != nil {
-		fmt.Println(err)
+		agents.WithMaxIterations(6),
 	}
 
-	ctx := context.Background()
+	// creae and run the agent
+	agent := agents.NewOneShotAgent(llm, tools, agentOptions...)
 
-	answer, err := chains.Run(ctx, executor, input)
+	executor := agents.NewExecutor(agent, tools, agentOptions...)
+
+	answer, err := chains.Run(context.Background(), executor, input)
 	if err != nil {
 		fmt.Println(err)
 	}
