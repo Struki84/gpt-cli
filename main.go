@@ -9,12 +9,13 @@ import (
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/openai"
 	"github.com/tmc/langchaingo/schema"
+
 	"gopkg.in/yaml.v2"
 
-	"gpt/api"
-	"gpt/browser"
-	"gpt/chat"
-	"gpt/read"
+	"gpt/agents/api"
+	"gpt/agents/chat"
+	"gpt/agents/reader"
+	"gpt/agents/search"
 )
 
 var rootCmd = &cobra.Command{
@@ -96,17 +97,19 @@ func init() {
 	}
 
 	searchCommand := &cobra.Command{
-		Use: "browse",
+		Use: "search",
 		Run: func(cmd *cobra.Command, args []string) {
-			response := browser.Prompt(args[0])
-			fmt.Println(response)
+			// response := browser.Prompt(args[0])
+			// fmt.Println(response)
+
+			search.MetaphorPrompt(args[0])
 		},
 	}
 
 	readCommand := &cobra.Command{
 		Use: "read",
 		Run: func(cmd *cobra.Command, args []string) {
-			read.Prompt(args[0], args[1])
+			reader.Prompt(args[0], args[1])
 		},
 	}
 
@@ -121,10 +124,8 @@ func init() {
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
 
-			browser.MetaphorPrompt(args[0])
-
 			// search, err := metaphor.NewSearch(
-			// 	client.WithAutoprompt(true),
+			// 	options.WithAutoprompt(true),
 			// )
 			// if err != nil {
 			// 	fmt.Println(err)

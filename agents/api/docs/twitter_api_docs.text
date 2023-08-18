@@ -1,0 +1,258 @@
+Twitter API Reference Index v2
+Rate limit:
+- User rate limit (User context): 50 requests per 15-minute window per each authenticated user
+1. Manage Tweets
+    - [POST /2/tweets](https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/post-tweets)
+    - [DELETE /2/tweets/:id](https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/delete-tweets-id)
+2. Quote tweets
+    - [GET /2/tweets/:id/quote_tweets](https://developer.twitter.com/en/docs/twitter-api/tweets/quote-tweets/api-reference/get-tweets-id-quote_tweets)
+3. Retweets
+    - [DELETE /2/users/:id/retweets/:source_tweet_id](https://developer.twitter.com/en/docs/twitter-api/tweets/retweets/api-reference/delete-users-id-retweets-tweet_id)
+    - [GET /2/tweets/:id/retweeted_by](https://developer.twitter.com/en/docs/twitter-api/tweets/retweets/api-reference/get-tweets-id-retweeted_by)
+    - [POST /2/users/:id/retweets](https://developer.twitter.com/en/docs/twitter-api/tweets/retweets/api-reference/post-users-id-retweets)
+4. Likes
+    - [POST /2/users/:id/likes](https://developer.twitter.com/en/docs/twitter-api/tweets/likes/api-reference/post-users-id-likes)
+    - [DELETE /2/users/:id/likes/:tweet_id](https://developer.twitter.com/en/docs/twitter-api/tweets/likes/api-reference/delete-users-user_id-likes)
+    - [GET /2/users/:id/liked_tweets](https://developer.twitter.com/en/docs/twitter-api/tweets/likes/api-reference/get-users-id-liked_tweets)
+
+    
+---
+API Documentation for POST /2/tweets
+Creates a Tweet on behalf of an authenticated user.
+Endpoint URL: https://api.twitter.com/2/tweets
+
+JSON body parameters
+Name	Type	Description
+direct_message_deep_link	Optional	String	Tweets a link directly to a Direct Message conversation with an account.
+for_super_followers_only	Optional	Boolean	Allows you to Tweet exclusively for Super Followers.
+geo	Optional	Object	A JSON object that contains location information for a Tweet.
+media	Optional	Object	A JSON object that contains media information being attached to created Tweet.
+poll	Optional	Object	A JSON object that contains options for a Tweet with a poll.
+quote_tweet_id	Optional	String	Link to the Tweet being quoted.
+reply	Optional	Object	A JSON object that contains information of the Tweet being replied to.
+text	Optional	String	Text of the Tweet being created.
+
+Response fields
+Name	Type	Description
+id	String	The ID of the newly created Tweet.
+text	String	The text of the newly created Tweet.
+---
+API Documentation for DELETE /2/tweets/:id
+Allows a user or authenticated user ID to delete a Tweet.
+Endpoint URL: https://api.twitter.com/2/tweets/:id
+
+Path parameters
+Parameter	Format	Required	Description
+id	String	Yes	The Tweet ID you are deleting.
+
+Example responses
+Successful response:
+```json
+{
+  "data": {
+    "deleted": true
+  }
+}
+```
+
+Response fields
+Name	Type	Description
+deleted	Boolean	Indicates whether the specified Tweet has been deleted as a result of this request. The returned value is true for a successful delete request.
+---
+API Documentation for GET /2/tweets/:id/quote_tweets
+Returns information about the Tweets that quote a specified Tweet.
+Endpoint URL: https://api.twitter.com/2/tweets/:id/quote_tweets
+
+Path parameters
+Parameter	Format	Required	Description
+id	String	Yes	The Tweet ID you are retrieving quote Tweets for.
+
+Example responses
+Successful response:
+```json
+{
+  "data": [
+    {
+      "id": "1495979553889697792",
+      "author_id": "29757971",
+      "created_at": "2022-02-22T04:31:34.000Z",
+      "text": "RT @chris_bail: Twitter has created an entire course (with videos, code, and other materials) to help researchers learn how to collect data…",
+      "conversation_id": "1495979553889697792",
+      "public_metrics": {
+        "retweet_count": 160,
+        "reply_count": 0,
+        "like_count": 0,
+        "quote_count": 0
+      }
+    },
+    ...
+  ]
+}
+```
+
+Response fields
+Name	Type	Description
+data	Array of Objects	An array of Tweet objects that quote the specified Tweet. Each object includes the Tweet's ID, author ID, creation time, text, conversation ID, and public metrics (retweet count, reply count, like count, and quote count).
+---
+API Documentation for DELETE /2/users/:id/retweets/:source_tweet_id
+Allows a user or authenticated user ID to remove the Retweet of a Tweet.
+Endpoint URL: https://api.twitter.com/2/users/:id/retweets/:source_tweet_id
+
+Path parameters
+Name	Type	Description
+id	String	Yes	The user ID who you are removing a the Retweet of a Tweet on behalf of. It must match your own user ID or that of an authenticating user, meaning that you must pass the Access Tokens associated with the user ID when authenticating your request.
+source_tweet_id	String	Yes	The ID of the Tweet that you would like the id to remove the Retweet of.
+
+Example responses
+Successful response:
+```json
+{
+  "data": {
+    "retweeted": false
+  }
+}
+```
+Response fields
+Name	Type	Description
+retweeted	Boolean	Indicates whether the user has removed the Retweet of the specified Tweet as a result of this request. The returned value is false for a successful unretweet request.
+---
+API Documentation for GET /2/tweets/:id/retweeted_by
+Returns a list of users who have retweeted the Tweet specified by the id parameter.
+Endpoint URL: https://api.twitter.com/2/tweets/:id/retweeted_by
+
+Path parameters
+Name	Type	Description
+id	String	Yes	The Tweet ID you are retrieving retweeters for.
+
+Response fields
+Name	Type	Description
+id	String	Unique identifier of this user. This is returned as a string in order to avoid complications with languages and tools that cannot handle large integers.
+name	String	The friendly name of this user, as shown on their profile.
+username	String	The Twitter handle (screen name) of this user.
+created_at	Date (ISO 8601)	Creation time of this account.
+protected	Boolean	Indicates if this user has chosen to protect their Tweets (in other words, if this user's Tweets are private).
+withheld	Object	Contains withholding details for withheld content.
+location	String	The location specified in the user's profile, if the user provided one.
+url	String	The URL specified in the user's profile, if present.
+description	String	The text of this user's profile description (also known as bio), if the user provided one.
+verified	Boolean	Indicate if this user is a verified Twitter user.
+profile_image_url	String	The URL to the profile image for this user, as shown on the user's profile.
+public_metrics	Object	Contains details about activity for this user.
+---
+API Documentation for POST /2/users/:id/retweets
+Causes the user ID identified in the path parameter to Retweet the target Tweet.
+Endpoint URL: https://api.twitter.com/2/users/:id/retweets
+
+Path parameters
+Name	Type	Description
+id	Required	string	The user ID who you are Retweeting a Tweet on behalf of. It must match your own user ID or that of an authenticating user, meaning that you must pass the Access Tokens associated with the user ID when authenticating your request.
+
+JSON body parameters
+Name	Type	Description
+tweet_id	Required	string	The ID of the Tweet that you would like the user id to Retweet.
+
+Example responses
+Successful response:
+```json
+{
+  "data": {
+    "retweeted": true
+  }
+}
+```
+Response fields
+Name	Type	Description
+retweeted	boolean	Indicates whether the user Retweets the specified Tweet as a result of this request.
+---
+API Documentation for POST /2/users/:id/likes
+Causes the user ID identified in the path parameter to Like the target Tweet.
+Endpoint URL: https://api.twitter.com/2/users/:id/likes
+
+Path parameters
+Name	Type	Description
+id	Required	string	The user ID who you are liking a Tweet on behalf of. It must match your own user ID or that of an authenticating user, meaning that you must pass the Access Tokens associated with the user ID when authenticating your request.
+
+JSON body parameters
+Name	Type	Description
+tweet_id	Required	string	The ID of the Tweet that you would like the user id to Like.
+
+Example responses
+Successful response:
+```json
+{
+  "data": {
+    "liked": true
+  }
+}
+```
+Response fields
+Name	Type	Description
+liked	boolean	Indicates whether the user likes the specified Tweet as a result of this request.
+---
+API Documentation for DELETE /2/users/:id/likes/:tweet_id
+Allows a user or authenticated user ID to unlike a Tweet.
+Endpoint URL: https://api.twitter.com/2/users/:id/likes/:tweet_id
+
+Path parameters
+Name	Type	Description
+id	Required	string	The user ID who you are removing a Like of a Tweet on behalf of. It must match your own user ID or that of an authenticating user, meaning that you must pass the Access Tokens associated with the user ID when authenticating your request.
+tweet_id	Required	string	The ID of the Tweet that you would like the id to unlike.
+
+Example responses
+Successful response:
+```json
+{
+  "data": {
+    "liked": false
+  }
+}
+```
+Response fields
+Name	Type	Description
+liked	boolean	Indicates whether the user is unliking the specified Tweet as a result of this request. The returned value is false for a successful unlike request.
+---
+API Documentation for GET /2/users/:id/liked_tweets
+Returns a list of Tweets the user has liked. 
+Endpoint URL: https://api.twitter.com/2/users/:id/liked_tweets
+
+Path parameters
+Name	Type	Description
+id	Required	string	The user ID who you want to retrieve liked Tweets for.
+
+Response fields
+Name	Type	Description
+data	array	An array of Tweet objects that the specified user has liked.
+includes	object	Provides expansions (if requested) for the returned Tweets.
+errors	array	An array of errors that occurred while processing the request.
+
+Tweet object fields
+Name	Type	Description
+id	string	Unique identifier of this Tweet.
+text	string	The content of the Tweet.
+created_at	date (ISO 8601)	Creation time of the Tweet.
+author_id	string	Unique identifier of this user.
+conversation_id	string	The Tweet ID of the original Tweet of the conversation.
+in_reply_to_user_id	string	If this Tweet is a Reply, indicates the user ID of the parent Tweet's author.
+referenced_tweets	array	A list of Tweets this Tweet refers to.
+attachments	object	Specifies the type of attachments (if any) present in this Tweet.
+geo	object	Contains details about the location tagged by the user in this Tweet, if they specified one.
+context_annotations	array	Contains context annotations for the Tweet.
+entities	object	Contains details about text that has a special meaning in a Tweet.
+withheld	object	Contains withholding details for withheld content.
+public_metrics	object	Engagement metrics for the Tweet at the time of the request.
+possibly_sensitive	boolean	Indicates if this Tweet contains URLs marked as sensitive, for example content suitable for mature audiences.
+lang	string	Language of the Tweet, if detected by Twitter.
+reply_settings	string	Shows who can reply to this Tweet.
+source	string	The name of the app the user Tweeted from.
+
+Includes object fields
+Name	Type	Description
+tweets	array	When including the expansions=referenced_tweets.id parameter, this includes a list of referenced Retweets, Quoted Tweets, or replies in the form of Tweet objects.
+users	array	When including the expansions=author_id parameter, this includes a list of referenced Tweet authors in the form of user objects.
+places	array	When including the expansions=geo.place_id parameter, this includes a list of referenced places in Tweets in the form of place objects.
+media	array	When including the expansions=attachments.media_keys parameter, this includes a list of images, videos, and GIFs included in Tweets in the form of media objects.
+polls	string	When including the expansions=attachments.poll_ids parameter, this includes a list of polls that are attached to Tweets in the form of poll objects.
+
+Errors object fields
+Name	Type	Description
+errors	array	Contains details about errors that affected any of the requested Tweets.
