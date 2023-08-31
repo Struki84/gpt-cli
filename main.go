@@ -13,6 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"gpt/agents/api"
+	"gpt/agents/browser"
 	"gpt/agents/chat"
 	"gpt/agents/reader"
 	"gpt/agents/search"
@@ -123,6 +124,10 @@ func init() {
 	runCommand := &cobra.Command{
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
+
+			response := browser.Prompt(args[0])
+
+			fmt.Println(response)
 
 			// search, err := metaphor.NewSearch(
 			// 	options.WithAutoprompt(true),

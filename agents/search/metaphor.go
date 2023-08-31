@@ -31,7 +31,10 @@ func MetaphorPrompt(input string) {
 	// setup persistent chat memory
 	dsn := "host=localhost user=gpt-admin password=gpt-password dbname=gpt-db port=5432"
 	chatHistory := memory.NewPersistentChatHistory(dsn)
-	agentMemory := lc_memory.NewConversationBuffer(lc_memory.WithChatHistory(chatHistory))
+	agentMemory := lc_memory.NewConversationBuffer(
+		lc_memory.WithChatHistory(chatHistory),
+		lc_memory.WithInputKey("output"),
+	)
 
 	chatHistory.SetSessionID("USID-003")
 
@@ -51,7 +54,12 @@ func MetaphorPrompt(input string) {
 		fmt.Println(err)
 	}
 
-	tools := []tools.Tool{search, documents}
+	links, err := metaphor.NewLinksSearch()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	tools := []tools.Tool{search, documents, links}
 
 	// build agent prompt template
 	tmpl := prompts.PromptTemplate{
@@ -69,9 +77,10 @@ func MetaphorPrompt(input string) {
 		agents.WithMemory(agentMemory),
 		agents.WithPrompt(tmpl),
 		agents.WithMaxIterations(6),
+		agents.WithReturnIntermediateSteps(),
 	}
 
-	// creae and run the agent
+	// create and run the agent
 	agent := agents.NewOneShotAgent(llm, tools, agentOptions...)
 
 	executor := agents.NewExecutor(agent, tools, agentOptions...)
