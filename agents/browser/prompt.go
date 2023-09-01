@@ -15,11 +15,27 @@ import (
 )
 
 const SummarisationTemplate = `
-	Write a concise summary of the following:
+	Please write a detailed report of the following website and its pages that will not exceed 4048 tokens:
 
 	"{{.context}}"
 
-	CONCISE SUMMARY:`
+	Structure the content in the following format:
+
+	WEBSITE SUMMARY:
+	[Place the summary of the entire website here]
+
+	PAGE SUMMARIES:
+	- [Page 1 Title]: [Summary of Page 1]
+	- [Page N Title]: [Summary of Page N]
+	...(Create a summary for every sub-page on the website)
+
+	LINK INDEX:
+	- Link 1: [Description of Link 1]
+	- Link N: [Description of Link N]
+	...(Depending on relevance, you can add none or N number of links)
+
+	FINAL THOUGHTS:
+	[Place any final thoughts or a concluding summary here]`
 
 func Prompt(input string) string {
 	llm, err := openai.NewChat(openai.WithModel("gpt-4"))
@@ -45,6 +61,7 @@ func Prompt(input string) string {
 		ctx,
 		summaryChain,
 		map[string]any{"input_documents": webDocuments},
+		chains.WithTemperature(0.1),
 	)
 	if err != nil {
 		fmt.Println(err)
