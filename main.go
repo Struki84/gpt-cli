@@ -92,8 +92,7 @@ func init() {
 	chatCommand := &cobra.Command{
 		Use: "chat",
 		Run: func(cmd *cobra.Command, args []string) {
-			response := chat.Prompt(args[0])
-			fmt.Println(response)
+			chat.Prompt(args[0])
 		},
 	}
 

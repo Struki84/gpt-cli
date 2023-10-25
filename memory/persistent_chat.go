@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"context"
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
@@ -68,7 +69,7 @@ func (history *PersistentChatHistory) SetSessionID(id string) {
 	history.sessionID = id
 }
 
-func (history *PersistentChatHistory) Messages() ([]schema.ChatMessage, error) {
+func (history *PersistentChatHistory) Messages(ctx context.Context) ([]schema.ChatMessage, error) {
 	if history.sessionID == "" {
 		return []schema.ChatMessage{}, ErrMissingSessionID
 	}
@@ -97,7 +98,7 @@ func (history *PersistentChatHistory) Messages() ([]schema.ChatMessage, error) {
 	return history.messages, nil
 }
 
-func (history *PersistentChatHistory) AddMessage(message schema.ChatMessage) error {
+func (history *PersistentChatHistory) AddMessage(ctx context.Context, message schema.ChatMessage) error {
 	if history.sessionID == "" {
 		return ErrMissingSessionID
 	}
@@ -120,15 +121,15 @@ func (history *PersistentChatHistory) AddMessage(message schema.ChatMessage) err
 	return nil
 }
 
-func (history *PersistentChatHistory) AddAIMessage(message string) error {
-	return history.AddMessage(schema.AIChatMessage{Content: message})
+func (history *PersistentChatHistory) AddAIMessage(ctx context.Context, message string) error {
+	return history.AddMessage(ctx, schema.AIChatMessage{Content: message})
 }
 
-func (history *PersistentChatHistory) AddUserMessage(message string) error {
-	return history.AddMessage(schema.HumanChatMessage{Content: message})
+func (history *PersistentChatHistory) AddUserMessage(ctx context.Context, message string) error {
+	return history.AddMessage(ctx, schema.HumanChatMessage{Content: message})
 }
 
-func (history *PersistentChatHistory) SetMessages(messages []schema.ChatMessage) error {
+func (history *PersistentChatHistory) SetMessages(ctx context.Context, messages []schema.ChatMessage) error {
 	if history.sessionID == "" {
 		return ErrMissingSessionID
 	}
@@ -146,7 +147,7 @@ func (history *PersistentChatHistory) SetMessages(messages []schema.ChatMessage)
 	return history.db.Save(&history.records).Error
 }
 
-func (history *PersistentChatHistory) Clear() error {
+func (history *PersistentChatHistory) Clear(ctx context.Context) error {
 	history.messages = []schema.ChatMessage{}
 
 	err := history.db.Where(ChatHistory{SessionID: history.sessionID}).Delete(&history.records).Error
