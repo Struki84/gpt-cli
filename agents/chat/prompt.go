@@ -6,8 +6,10 @@ import (
 	"log"
 
 	"github.com/tmc/langchaingo/chains"
+	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/openai"
 	"github.com/tmc/langchaingo/memory"
+	"github.com/tmc/langchaingo/tools"
 )
 
 func Prompt(input string, options ...chains.ChainCallOption) {
@@ -18,40 +20,44 @@ func Prompt(input string, options ...chains.ChainCallOption) {
 		log.Fatal(err)
 	}
 
+	// runChains(ctx, llm, input)
+
+	runAgents(ctx, llm, input)
+}
+
+// trunk-ignore(golangci-lint/unused)
+func runChains(ctx context.Context, llm llms.LanguageModel, input string) {
 	chain := chains.NewConversation(llm, memory.NewConversationBuffer())
 
 	stream := chains.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
-		fmt.Println(string(chunk))
+		fmt.Print(string(chunk))
 		return nil
 	})
 
-	_, err = chains.Run(ctx, chain, input, stream)
+	_, err := chains.Run(ctx, chain, input, stream)
 
 	if err != nil {
 		log.Fatal(err)
 	}
+}
 
-	// executor, err := agents.Initialize(
-	// 	llm,
-	// 	[]tools.Tool{},
-	// 	agents.ConversationalReactDescription,
-	// 	agents.WithReturnIntermediateSteps(), // This throws an error
-	// 	agents.WithCallbacksHandler(&PromptCallbacks{}),
-	// )
+func runAgents(ctx context.Context, llm llms.LanguageModel, input string) {
 
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	cb := &PromptCallbacks{}
 
-	// _, err = chains.Run(
-	// 	ctx,
-	// 	executor,
-	// 	input,
-	// 	chains.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
-	// 		fmt.Println(string(chunk))
-	// 		return nil
-	// 	}),
-	// )
+	agent := NewAsaiAgent(
+		llm,
+		[]tools.Tool{},
+		WithCallbacksHandler(cb),
+	)
+
+	executor := NewExecutor(
+		agent,
+		[]tools.Tool{},
+		WithCallbacksHandler(cb),
+	)
+
+	_, err := chains.Call(ctx, executor, map[string]any{"input": input})
 
 	if err != nil {
 		log.Fatal(err)

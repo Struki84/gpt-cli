@@ -2,6 +2,8 @@ module gpt
 
 go 1.20
 
+replace github.com/tmc/langchaingo => /Users/simun/Engineering/Projects/GoLangChain/SourceCode
+
 require (
 	github.com/gocolly/colly v1.2.0
 	github.com/google/uuid v1.3.1

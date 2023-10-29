@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/tmc/langchaingo/agents"
+	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms/openai"
 	lc_memory "github.com/tmc/langchaingo/memory"
@@ -69,10 +70,11 @@ func Prompt(input string) string {
 	executor, err := agents.Initialize(
 		llm,
 		tools,
-		agents.ZeroShotReactDescription,
+		agents.ConversationalReactDescription,
 		agents.WithMemory(agentMemory),
 		agents.WithPrompt(tmpl),
 		agents.WithMaxIterations(3),
+		agents.WithCallbacksHandler(&callbacks.LogHandler{}),
 		// agents.WithReturnIntermediateSteps(), This throws an error(invalid input values: multiple keys and no input key set) need to open issue
 	)
 

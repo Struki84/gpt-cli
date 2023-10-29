@@ -3,14 +3,19 @@ package chat
 import (
 	"context"
 
+	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/schema"
 )
 
-type PromptCallbacks struct{}
+var _ callbacks.Handler = &PromptCallbacks{}
 
-func (*PromptCallbacks) HandleText(ctx context.Context, text string) {
+type PromptCallbacks struct {
+	callbacks.SimpleHandler
+}
 
+func (*PromptCallbacks) HandleStreamingFunc(ctx context.Context, chunk []byte) {
+	print(string(chunk))
 }
 
 func (*PromptCallbacks) HandleLLMStart(ctx context.Context, prompts []string) {
@@ -39,12 +44,4 @@ func (*PromptCallbacks) HandleToolEnd(ctx context.Context, output string) {
 
 func (*PromptCallbacks) HandleAgentAction(ctx context.Context, action schema.AgentAction) {
 	println("Agent is performing an action")
-}
-
-func (*PromptCallbacks) HandleRetrieverStart(ctx context.Context, query string) {
-
-}
-
-func (*PromptCallbacks) HandleRetrieverEnd(ctx context.Context, query string, documents []schema.Document) {
-
 }
