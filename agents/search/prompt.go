@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/tmc/langchaingo/agents"
-	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms/openai"
 	lc_memory "github.com/tmc/langchaingo/memory"
@@ -63,18 +62,15 @@ func Prompt(input string) string {
 		},
 	}
 
-	chatHistory.SetSessionID("USID-002")
-
 	ctx := context.Background()
 
 	executor, err := agents.Initialize(
 		llm,
 		tools,
-		agents.ConversationalReactDescription,
+		agents.ZeroShotReactDescription,
 		agents.WithMemory(agentMemory),
 		agents.WithPrompt(tmpl),
 		agents.WithMaxIterations(3),
-		agents.WithCallbacksHandler(&callbacks.LogHandler{}),
 		// agents.WithReturnIntermediateSteps(), This throws an error(invalid input values: multiple keys and no input key set) need to open issue
 	)
 
@@ -82,7 +78,11 @@ func Prompt(input string) string {
 		log.Print(err)
 	}
 
-	answer, err := chains.Run(ctx, executor, input)
+	inputs := map[string]any{
+		"input": input,
+	}
+
+	answer, err := chains.Predict(ctx, executor, inputs)
 	if err != nil {
 		log.Print(err)
 		return ""
