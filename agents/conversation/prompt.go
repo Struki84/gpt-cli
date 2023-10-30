@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	my_agents "gpt/agents"
+
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms/openai"
@@ -26,7 +28,7 @@ func Prompt(input string) {
 		[]tools.Tool{},
 		agents.ConversationalReactDescription,
 		agents.WithMemory(memory.NewSimple()),
-		agents.WithCallbacksHandler(&PromptCallbacks{}),
+		agents.WithCallbacksHandler(&my_agents.PromptCallbacks{}),
 	)
 
 	if err != nil {

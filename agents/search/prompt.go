@@ -3,11 +3,12 @@ package search
 import (
 	"context"
 	"fmt"
-	"gpt/memory"
 	"gpt/tools/scraper"
 	"log"
 	"os"
 	"strings"
+
+	my_agents "gpt/agents"
 
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/chains"
@@ -19,7 +20,7 @@ import (
 	"github.com/tmc/langchaingo/tools/serpapi"
 )
 
-func Prompt(input string) string {
+func Prompt(input string) {
 	var err error
 
 	llm, err := openai.NewChat(
@@ -29,11 +30,14 @@ func Prompt(input string) string {
 		log.Print(err)
 	}
 
-	dsn := "host=localhost user=gpt-admin password=gpt-password dbname=gpt-db port=5432"
-	chatHistory := memory.NewPersistentChatHistory(dsn)
-	agentMemory := lc_memory.NewConversationBuffer(lc_memory.WithChatHistory(chatHistory))
+	// dsn := "host=localhost user=gpt-admin password=gpt-password dbname=gpt-db port=5432"
 
-	chatHistory.SetSessionID("USID-003")
+	// chatHistory := memory.NewPersistentChatHistory(dsn)
+	// chatHistory.SetSessionID("USID-003")
+
+	// agentMemory := lc_memory.NewConversationBuffer(lc_memory.WithChatHistory(chatHistory))
+
+	agentMemory := lc_memory.NewSimple()
 
 	ddg, err := duckduckgo.New(5, duckduckgo.DefaultUserAgent)
 	if err != nil {
@@ -55,10 +59,11 @@ func Prompt(input string) string {
 	tmpl := prompts.PromptTemplate{
 		Template:       loadPromptTxToString(),
 		TemplateFormat: prompts.TemplateFormatGoTemplate,
-		InputVariables: []string{"input", "history", "agent_scratchpad", "today"},
+		InputVariables: []string{"input", "agent_scratchpad", "today"},
 		PartialVariables: map[string]interface{}{
 			"tool_names":        toolNames(tools),
 			"tool_descriptions": toolDescriptions(tools),
+			"history":           "",
 		},
 	}
 
@@ -71,7 +76,7 @@ func Prompt(input string) string {
 		agents.WithMemory(agentMemory),
 		agents.WithPrompt(tmpl),
 		agents.WithMaxIterations(3),
-		// agents.WithReturnIntermediateSteps(), This throws an error(invalid input values: multiple keys and no input key set) need to open issue
+		agents.WithCallbacksHandler(&my_agents.PromptCallbacks{}),
 	)
 
 	if err != nil {
@@ -82,13 +87,10 @@ func Prompt(input string) string {
 		"input": input,
 	}
 
-	answer, err := chains.Predict(ctx, executor, inputs)
+	_, err = chains.Predict(ctx, executor, inputs)
 	if err != nil {
 		log.Print(err)
-		return ""
 	}
-
-	return answer
 }
 
 func toolNames(tools []tools.Tool) string {

@@ -3,6 +3,7 @@ package chat
 import (
 	"context"
 	"fmt"
+	"gpt/agents"
 	"log"
 
 	"github.com/tmc/langchaingo/chains"
@@ -25,7 +26,7 @@ func Prompt(input string, options ...chains.ChainCallOption) {
 	runAgents(ctx, llm, input)
 }
 
-// trunk-ignore(golangci-lint/unused)
+// nolint: all
 func runChains(ctx context.Context, llm llms.LanguageModel, input string) {
 	chain := chains.NewConversation(llm, memory.NewConversationBuffer())
 
@@ -43,7 +44,7 @@ func runChains(ctx context.Context, llm llms.LanguageModel, input string) {
 
 func runAgents(ctx context.Context, llm llms.LanguageModel, input string) {
 
-	cb := &PromptCallbacks{}
+	cb := &agents.PromptCallbacks{}
 
 	agent := NewAsaiAgent(
 		llm,

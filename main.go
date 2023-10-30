@@ -104,8 +104,8 @@ func init() {
 
 			// search.MetaphorPrompt(args[0])
 
-			response := search.Prompt(args[0])
-			fmt.Println(response)
+			search.Prompt(args[0])
+
 		},
 	}
 
