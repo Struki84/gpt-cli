@@ -3,8 +3,9 @@ package chat
 import (
 	"context"
 	"fmt"
-	"gpt/agents"
 	"log"
+
+	my_agents "gpt/agents"
 
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms"
@@ -44,18 +45,18 @@ func runChains(ctx context.Context, llm llms.LanguageModel, input string) {
 
 func runAgents(ctx context.Context, llm llms.LanguageModel, input string) {
 
-	cb := &agents.PromptCallbacks{}
+	agentCallback := my_agents.NewPromptCallbacks()
 
 	agent := NewAsaiAgent(
 		llm,
 		[]tools.Tool{},
-		WithCallbacksHandler(cb),
+		WithCallbacksHandler(agentCallback),
 	)
 
 	executor := NewExecutor(
 		agent,
 		[]tools.Tool{},
-		WithCallbacksHandler(cb),
+		WithCallbacksHandler(agentCallback),
 	)
 
 	_, err := chains.Call(ctx, executor, map[string]any{"input": input})
@@ -63,4 +64,12 @@ func runAgents(ctx context.Context, llm llms.LanguageModel, input string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	egressChannel := agentCallback.GetEgress()
+
+	go func() {
+		for data := range egressChannel {
+			fmt.Print(string(data))
+		}
+	}()
 }

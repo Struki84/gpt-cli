@@ -23,12 +23,14 @@ func Prompt(input string) {
 		fmt.Println(err)
 	}
 
+	agentCallback := my_agents.NewPromptCallbacks()
+
 	executor, err := agents.Initialize(
 		llm,
 		[]tools.Tool{},
 		agents.ConversationalReactDescription,
 		agents.WithMemory(memory.NewSimple()),
-		agents.WithCallbacksHandler(&my_agents.PromptCallbacks{}),
+		agents.WithCallbacksHandler(agentCallback),
 	)
 
 	if err != nil {
@@ -39,5 +41,13 @@ func Prompt(input string) {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	egressChannel := agentCallback.GetEgress()
+
+	go func() {
+		for data := range egressChannel {
+			fmt.Print(string(data))
+		}
+	}()
 
 }

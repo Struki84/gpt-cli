@@ -69,6 +69,8 @@ func Prompt(input string) {
 
 	ctx := context.Background()
 
+	agentCallback := my_agents.NewPromptCallbacks()
+
 	executor, err := agents.Initialize(
 		llm,
 		tools,
@@ -76,7 +78,7 @@ func Prompt(input string) {
 		agents.WithMemory(agentMemory),
 		agents.WithPrompt(tmpl),
 		agents.WithMaxIterations(3),
-		agents.WithCallbacksHandler(&my_agents.PromptCallbacks{}),
+		agents.WithCallbacksHandler(agentCallback),
 	)
 
 	if err != nil {
@@ -91,6 +93,14 @@ func Prompt(input string) {
 	if err != nil {
 		log.Print(err)
 	}
+
+	egressChannel := agentCallback.GetEgress()
+
+	go func() {
+		for data := range egressChannel {
+			fmt.Print(string(data))
+		}
+	}()
 }
 
 func toolNames(tools []tools.Tool) string {
