@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/tmc/langchaingo/callbacks"
+	"github.com/tmc/langchaingo/llms"
+	"github.com/tmc/langchaingo/schema"
 )
 
 var (
@@ -38,8 +40,45 @@ func (p *PromptCallbacks) GetEgress() chan []byte {
 	return p.egress
 }
 
-func (p *PromptCallbacks) HandleChainStart(ctx context.Context, inputs map[string]any) {
-	fmt.Println("Chain Starting...")
+func (p *PromptCallbacks) ReadFromEgress(f func(chunk []byte)) {
+	go func() {
+		defer close(p.egress)
+		for data := range p.egress {
+			f(data)
+		}
+	}()
+}
+
+func (p *PromptCallbacks) HandleText(_ context.Context, text string) {
+	fmt.Println(text)
+}
+
+func (p *PromptCallbacks) HandleLLMStart(_ context.Context, prompts []string) {
+	fmt.Println("Entering LLM with prompts:", prompts)
+}
+
+func (p *PromptCallbacks) HandleLLMEnd(_ context.Context, output llms.LLMResult) {
+	fmt.Println("Exiting LLM with results:", formatLLMResult(output))
+}
+
+func (p *PromptCallbacks) HandleChainStart(_ context.Context, inputs map[string]any) {
+	fmt.Println("Entering chain with inputs:", formatChainValues(inputs))
+}
+
+func (p *PromptCallbacks) HandleChainEnd(_ context.Context, outputs map[string]any) {
+	fmt.Println("Exiting chain with outputs:", formatChainValues(outputs))
+}
+
+func (p *PromptCallbacks) HandleToolStart(_ context.Context, input string) {
+	fmt.Println("Entering tool with input:", removeNewLines(input))
+}
+
+func (p *PromptCallbacks) HandleToolEnd(_ context.Context, output string) {
+	fmt.Println("Exiting tool with output:", removeNewLines(output))
+}
+
+func (p *PromptCallbacks) HandleAgentAction(_ context.Context, action schema.AgentAction) {
+	fmt.Println("Agent selected action:", formatAgentAction(action))
 }
 
 func (p *PromptCallbacks) HandleStreamingFunc(ctx context.Context, chunk []byte) {
@@ -72,6 +111,34 @@ func (p *PromptCallbacks) HandleStreamingFunc(ctx context.Context, chunk []byte)
 
 	// Print the final output after the detection of keyword.
 	if p.PrintOutput {
-		p.egress <- chunk
+		p.egress <- []byte(chunkStr)
 	}
+}
+
+func formatChainValues(values map[string]any) string {
+	output := ""
+	for key, value := range values {
+		output += fmt.Sprintf("\"%s\" : \"%s\", ", removeNewLines(key), removeNewLines(value))
+	}
+
+	return output
+}
+
+func formatLLMResult(output llms.LLMResult) string {
+	results := "[ "
+	for i := 0; i < len(output.Generations); i++ {
+		for j := 0; j < len(output.Generations[i]); j++ {
+			results += output.Generations[i][j].Text
+		}
+	}
+
+	return results + " ]"
+}
+
+func formatAgentAction(action schema.AgentAction) string {
+	return fmt.Sprintf("\"%s\" with input \"%s\"", removeNewLines(action.Tool), removeNewLines(action.ToolInput))
+}
+
+func removeNewLines(s any) string {
+	return strings.ReplaceAll(fmt.Sprint(s), "\n", " ")
 }

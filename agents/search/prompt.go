@@ -71,6 +71,10 @@ func Prompt(input string) {
 
 	agentCallback := my_agents.NewPromptCallbacks()
 
+	agentCallback.ReadFromEgress(func(chunk []byte) {
+		fmt.Print(string(chunk))
+	})
+
 	executor, err := agents.Initialize(
 		llm,
 		tools,
@@ -93,14 +97,6 @@ func Prompt(input string) {
 	if err != nil {
 		log.Print(err)
 	}
-
-	egressChannel := agentCallback.GetEgress()
-
-	go func() {
-		for data := range egressChannel {
-			fmt.Print(string(data))
-		}
-	}()
 }
 
 func toolNames(tools []tools.Tool) string {

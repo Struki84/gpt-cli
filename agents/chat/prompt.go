@@ -47,6 +47,16 @@ func runAgents(ctx context.Context, llm llms.LanguageModel, input string) {
 
 	agentCallback := my_agents.NewPromptCallbacks()
 
+	egressChannel := agentCallback.GetEgress()
+
+	go func() {
+		fmt.Println("Go routine")
+		defer close(egressChannel)
+		for data := range egressChannel {
+			fmt.Print(string(data))
+		}
+	}()
+
 	agent := NewAsaiAgent(
 		llm,
 		[]tools.Tool{},
@@ -65,11 +75,4 @@ func runAgents(ctx context.Context, llm llms.LanguageModel, input string) {
 		log.Fatal(err)
 	}
 
-	egressChannel := agentCallback.GetEgress()
-
-	go func() {
-		for data := range egressChannel {
-			fmt.Print(string(data))
-		}
-	}()
 }

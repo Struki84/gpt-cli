@@ -7,6 +7,7 @@ import (
 	my_agents "gpt/agents"
 
 	"github.com/tmc/langchaingo/agents"
+	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms/openai"
 	"github.com/tmc/langchaingo/memory"
@@ -14,6 +15,12 @@ import (
 )
 
 func Prompt(input string) {
+	agentCallback := my_agents.NewPromptCallbacks()
+
+	agentCallback.ReadFromEgress(func(chunk []byte) {
+		fmt.Print(string(chunk))
+	})
+
 	ctx := context.Background()
 
 	llm, err := openai.NewChat(
@@ -23,14 +30,12 @@ func Prompt(input string) {
 		fmt.Println(err)
 	}
 
-	agentCallback := my_agents.NewPromptCallbacks()
-
 	executor, err := agents.Initialize(
 		llm,
 		[]tools.Tool{},
 		agents.ConversationalReactDescription,
 		agents.WithMemory(memory.NewSimple()),
-		agents.WithCallbacksHandler(agentCallback),
+		agents.WithCallbacksHandler(callbacks.LogHandler{}),
 	)
 
 	if err != nil {
@@ -41,13 +46,4 @@ func Prompt(input string) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	egressChannel := agentCallback.GetEgress()
-
-	go func() {
-		for data := range egressChannel {
-			fmt.Print(string(data))
-		}
-	}()
-
 }
