@@ -14,9 +14,9 @@ import (
 
 	"gpt/agents/api"
 	"gpt/agents/chat"
-	"gpt/agents/conversation"
 	"gpt/agents/reader"
 	"gpt/agents/search"
+	"gpt/ollama"
 )
 
 var rootCmd = &cobra.Command{
@@ -126,7 +126,9 @@ func init() {
 	runCommand := &cobra.Command{
 		Use: "run",
 		Run: func(cmd *cobra.Command, args []string) {
-			conversation.Prompt(args[0])
+			ollama.Prompt(args[0])
+
+			//conversation.Prompt(args[0])
 
 			// response := browser.Prompt(args[0])
 			// fmt.Println(response)
