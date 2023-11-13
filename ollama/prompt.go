@@ -13,6 +13,7 @@ func Prompt(input string) {
 
 	llm, err := ollama.New(
 		ollama.WithModel("mistral"),
+		ollama.WithServerURL("http://localhost:11434"),
 	)
 	if err != nil {
 		log.Fatal(err)
