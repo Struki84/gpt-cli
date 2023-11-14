@@ -9,7 +9,7 @@ import (
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/chains"
-	"github.com/tmc/langchaingo/llms/openai"
+	lc_ollama "github.com/tmc/langchaingo/llms/ollama"
 	"github.com/tmc/langchaingo/memory"
 	"github.com/tmc/langchaingo/tools"
 )
@@ -23,8 +23,13 @@ func Prompt(input string) {
 
 	ctx := context.Background()
 
-	llm, err := openai.NewChat(
-		openai.WithModel("gpt-4"),
+	// llm, err := openai.NewChat(
+	// 	openai.WithModel("gpt-4"),
+	// )
+
+	llm, err := lc_ollama.New(
+		lc_ollama.WithModel("mistral"),
+		lc_ollama.WithServerURL("http://localhost:11434"),
 	)
 	if err != nil {
 		fmt.Println(err)
