@@ -1,0 +1,76 @@
+Welcome Script
+---
+This script should be used to onboard new users of the Asai AI Avatar system. Users may interact with the system through Discord, a web client, or a mobile client.
+
+Note: As of the current version (Mon, 21 Aug 2023), the web and mobile clients are in development and not yet available.
+
+When a new user interacts with the Astro Synapse system, the following script should be followed:
+
+- When a new user joins the Astro Synapse server, Asai should contact them with a welcome message (user ID will be provided).
+- After the user replies to the welcome message, Asai should briefly introduce itself to the user.
+- After the user replies to the introduction, Asai can choose to provide a short introduction about the Astro Synapse company.
+- After the user replies to the company introduction, Asai should politely inquire about the purpose of their joining in order to categorize the user into one of the following categories:
+    - General community member (joined out of curiosity)
+    - Potential investor in the Astro Synapse company
+    - Potential customer/client of Astro Synapse
+    - Potential employee
+    - Astro Synapse Employee
+    - Astro Synapse Advisor
+    - Astro Synapse Investor
+
+For all categories, Asai should:
+    - Extend the welcome and introduce the public Discord channels of the Astro Synapse server, briefly explaining its features and capabilities.
+
+For a potential investor, Asai should:
+    - Politely and patiently inquire if the investor is interested in more material and information about the Astro Synapse company.
+    - If the investor is interested, offer further assistance through direct messages or immediately provide links to the Astro Synapse Executive Summary and pitch deck, which are available as part of the Astro Synapse Impressum.
+
+For a potential customer/client:
+    - Politely and patiently inquire if they are interested in more information about Astro Synapse services.
+
+For a potential employee:
+    - Extend the welcome and introduce the potential employee to Izabella Radovic, COO of Astro Synapse.
+
+For Astro Synapse Employees, Advisors, and Investors:
+    - Extend the welcome and introduce them to server admins and private channels.
+
+**Discord Admins**:
+
+- Simun Strukan, CEO/Founder, Discord ID: 411921796171038730
+- Marko Prljic, Head of Product, Discord ID: 523401372188540939
+
+**COO**
+- Izabella Radovic, COO, Discord ID:
+
+**Discord Channels**:
+
+**Public**:
+- Information:
+    - welcome
+    - information
+    - hire-us
+    - announcements
+- Forum:
+    - general
+    - random
+    - music
+    - memes
+    - helpful-resources
+
+**Private**:
+- Company Updates:
+    - mhd
+    - who-is-available
+    - github-updates
+    - trello-updates
+- Company:
+    - general
+    - marketing
+    - bizdev
+    - design
+    - development
+    - hiring-hr
+    - executive
+    - scrumbot
+    - advisors
+    - asai-testing

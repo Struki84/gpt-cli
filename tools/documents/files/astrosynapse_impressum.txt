@@ -1,0 +1,74 @@
+Astro Synapse Impressum
+----
+
+**Company Overview**
+
+Astro Synapse is a premier AI research and integration lab that specializes in providing essential AI technological and business know-how to various businesses. The company operates through a unique approach, generating income from multiple streams, including consulting services, custom model training, research and patent licensing, and contributions to open-source projects.
+
+**Business Model**
+
+Our business model encompasses several revenue streams, including AI consulting, education, and integration services; custom model training; open-source contributions; and the Asai Research Project and technology licensing. 
+
+- **AI Consulting, Education, and Integration Services**: We help businesses understand and leverage AI technologies by offering training, developing customized AI solutions, and providing ongoing support and maintenance. 
+- **Custom Model Training**: We create tailored AI models based on the unique needs of businesses, offering ongoing support and maintenance to ensure optimal performance.
+- **Open-Source Contributions**: We actively contribute to open-source projects focused on AI models and technologies, staying at the forefront of AI development.
+- **Asai Research Project and Technology Licensing**: Our innovative Asai project involves the creation of AI avatars, which can be trained to represent users in online interactions. These avatars are used for both private and public purposes, and we patent and license the technology to generate additional revenue.
+
+**AI Consulting, Education, and Integration Services**
+
+Astro Synapse assists businesses in comprehending and unlocking the potential of AI. Their services range from training on AI technologies to developing customized AI solutions that fit specific needs. The team of experts provides consultations on AI integration, ensuring seamless adaptation of AI technologies into client operations.
+
+**Custom Model Training**
+
+The company offers tailored model training services to meet the diverse and specific needs of businesses. They work closely with businesses to identify their unique needs, create customized training data sets, and train AI models that precisely meet their requirements.
+
+**Open-Source Contributions**
+
+Astro Synapse actively contributes to open-source projects focused on AI models and AI-based technologies. This enhances their reputation in the AI community and allows them to stay on the cutting edge of AI development.
+
+**Asai Research Project and Technology Licensing**
+
+The Asai research project is a pioneering venture into the creation of AI Avatars - digital personas based on AI models that are self-hosted and can be trained on selected data to modify their behavior according to user requirements. Astro Synapse's involvement in this project demonstrates their commitment to driving innovation in AI.
+
+**Team**
+
+The company's team consists of experienced professionals.
+
+1. Simun Strukan, CEO
+    - simun.strukan@astrosynapse.ai
+    - +385 981624339
+2. Izabella Radovic, COO
+    - izabela@astrosynapse.ai
+    - +385916214992
+3. Marko Prljic, Head of Product
+    - marko@astrosynapse.ai
+    - +385989299699
+4. Zoran Dordevic, Sales + Biz Dev
+5. Luka Bagic, Software Engineer
+6. Fran Leustek, Software Engineer
+7. Iva Strukan, Marketing + BizDev
+
+**Brand**
+
+Astro Synapse's tagline is "Automata ad Astra," encapsulating its mission to integrate AI across all vertical sectors within the business world.
+
+**Market Fit**
+
+Astro Synapse focuses on the USA market, leveraging the Eastern European workforce's technological expertise to offer services at competitive rates. This approach makes them an attractive employer within the Eastern European market while providing high-quality services in the USA market.
+
+**Services**
+
+Astro Synapse offers a range of services, including consulting and education, contract-based research, AI-based tech integrations, and custom model training. They also have product lines focused on AI avatars, synthetic swarms, robotic electric tram systems, and automated orbital assembly systems.
+
+**Mission and Vision**
+
+Astro Synapse's mission is to spearhead the comprehensive integration of AI across all vertical sectors within the business world. Their vision is to inspire people to answer the call to adventure and join the space race, ultimately becoming a prominent AI research lab in Eastern Europe, focusing on the USA market.
+
+**Contact Information**
+
+Astro Synapse
+Email: info@astrosynapse.ai
+Website: https://astrosynapse.ai
+Pitch Deck: https://pitch.com/public/ce61f60b-2391-44cb-9a86-66ee8795bca8/a3017bb5-2a20-4ee5-bff4-9b96643e7178
+Executive Summary: https://astrosynapse.notion.site/Executive-Summary-bf24b46018e14c22baf40a58d5674e83
+

@@ -1,0 +1,21 @@
+Asai Architecture
+---
+
+Asai is AI Avatar proof of concept. Primarily written in GoLang it heavily relies on the [LangChain](https://langchain.com/) framework, specifically [LangChain-Go](https://github.com/tmc/langchaingo).
+
+The backend of Asai consists of several microservices, including the engine service, the Discord service, and the app service.
+
+The Discord and app services implement the Discord API and general web application functionalities, respectively.
+
+The engine is the core service that handles all interactions with LLM (Language Models). Written in LangChain-Go, it is responsible for creating and managing various AI agents that perform multiple tasks. It also tracks user interactions by implementing long-term and agent memory.
+
+As of the current implementation (Mon, 21 Aug 2023), there are several agents available:
+
+- The main Asai engine is a conversational agent that converses directly with the user and manages the use of the system's agents and tools.
+- The search agent uses several different search engines to look up information on the internet.
+- The browser agent reads HTML pages.
+- The library agent loads and reads documents and various data provided in the knowledge base library.
+
+In addition, Asai has a web and mobile client in development.
+
+The mobile app is expected to incorporate biometric readings and allow users to interact with the system through audio (speech).
